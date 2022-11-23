@@ -404,6 +404,7 @@ MonoBehaviour:
   Caravan: {fileID: 7075906513666190735, guid: 4f91631554ba60a41aca0c51ed4ac03a, type: 3}
   Horse: {fileID: 5870066832978470687, guid: 870336c42f7a62e4ba0d622b65457001, type: 3}
   ObjectParent: {fileID: 1776885395}
+  tmpObstacle: {fileID: 1231025492079827288, guid: 27b15a3d2ad64d84cae40da4cb715fa2, type: 3}
   Horses:
   - {fileID: 1066255248}
   Caravans:

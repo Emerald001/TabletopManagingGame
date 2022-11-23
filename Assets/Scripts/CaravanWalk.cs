@@ -9,7 +9,9 @@ public class CaravanWalk : MonoBehaviour
 
     public GameObject Caravan;
     public GameObject Horse;
-    public Transform ObjectParent; 
+    public Transform ObjectParent;
+
+    public GameObject tmpObstacle;
 
     public List<GameObject> Horses = new();
     public List<GameObject> Caravans = new();
@@ -31,6 +33,8 @@ public class CaravanWalk : MonoBehaviour
 
     private List<GameObject> CaravanPositions = new();
 
+    private bool tmpBool = false;
+
     void Start() {
         treeTimer = timer;
         bushTimer = timer;
@@ -41,8 +45,15 @@ public class CaravanWalk : MonoBehaviour
     }
 
     void Update() {
+        if (Input.GetKeyDown(KeyCode.L)) {
+            SpawnObstacle(tmpObstacle);
+        }
+
         timer = Mathf.InverseLerp(100f, 0, speed) * timerModifier;
         timer = Mathf.Max(timer, .4f);
+
+        if (tmpBool)
+            speed -= 5 * Time.deltaTime;
 
         if (speed < 1)
             return;
@@ -156,7 +167,14 @@ public class CaravanWalk : MonoBehaviour
     }
 
     public void SpawnObstacle(GameObject obstacle) {
+        var item = Instantiate(obstacle, ObjectParent);
 
+        item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y, Beginning.transform.position.z);
+        item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+
+        Surroundings.Add(item);
+
+        tmpBool = true;
     }
 
     float Timer(ref float timer) {
