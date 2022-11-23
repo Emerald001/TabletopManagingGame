@@ -16,4 +16,12 @@ public class LiquidStack : MonoBehaviour
     void Update() {
         
     }
+
+    public void AddLiquid(float amount) {
+
+    }
+
+    public void RemoveLiquid(float amount) {
+
+    }
 }

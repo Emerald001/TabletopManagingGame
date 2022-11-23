@@ -8,10 +8,14 @@ public class ResourceStack : MonoBehaviour
 
     public int addAmount;
     public int removeAmount;
+
+    [HideInInspector] public int StackAmount;
     
     private List<GameObject> ItemStack = new();
 
     private void Update() {
+        StackAmount = ItemStack.Count;
+
         if (Input.GetKeyDown(KeyCode.U)) {
             AddItem(addAmount);
         }
@@ -30,9 +34,10 @@ public class ResourceStack : MonoBehaviour
                 ItemStack[i].transform.position = new Vector3(transform.position.x + Random.Range(-.25f, .25f), transform.position.y + 2, transform.position.z + Random.Range(-.25f, .25f));
             }
 
-            if (ItemStack[i].GetComponent<Rigidbody>().velocity.magnitude < .1f)
-                if(Vector3.Distance(transform.position, ItemStack[i].transform.position) > .7f)
+            if (ItemStack[i].GetComponent<Rigidbody>().velocity.magnitude < .1f) {
+                if(Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(ItemStack[i].transform.position.x, ItemStack[i].transform.position.z)) > .7f)
                     ItemStack[i].transform.position = new Vector3(transform.position.x + Random.Range(-.25f, .25f), transform.position.y + 2, transform.position.z + Random.Range(-.25f, .25f));
+            }
         }
     }
 
@@ -44,6 +49,9 @@ public class ResourceStack : MonoBehaviour
 
             tmp.transform.position = new Vector3(transform.position.x + Random.Range(-.25f, .25f), transform.position.y + 2, transform.position.z + Random.Range(-.25f, .25f));
             tmp.transform.eulerAngles = new Vector3(Random.Range(0, 90), Random.Range(0, 90), Random.Range(0, 90));
+
+            var size = Random.Range(.7f, 1);
+            tmp.transform.localScale = new Vector3(size, size, size);
 
             ItemStack.Add(tmp);
         }
@@ -58,9 +66,9 @@ public class ResourceStack : MonoBehaviour
         for (int i = 0; i < amount; i++) {
             var tmp = ItemStack[ItemStack.Count - (i + 1)];
 
-            var DisplayPos = new Vector3(tmp.transform.position.x, transform.position.y + .4f, tmp.transform.position.z);
+            var DisplayPos = new Vector3(tmp.transform.position.x, transform.position.y + .6f, tmp.transform.position.z);
 
-            tmp.transform.position = Vector3.MoveTowards(tmp.transform.position, DisplayPos, Time.deltaTime);
+            tmp.transform.position = Vector3.MoveTowards(tmp.transform.position, DisplayPos, 2 * Time.deltaTime);
             tmp.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         }
     }
