@@ -45,19 +45,29 @@ public class CaravanWalk : MonoBehaviour
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.L)) {
-            SpawnObstacle(tmpObstacle);
-        }
-
         timer = Mathf.InverseLerp(100f, 0, speed) * timerModifier;
         timer = Mathf.Max(timer, .4f);
 
         if (tmpBool)
             speed -= 5 * Time.deltaTime;
 
-        if (speed < 1)
-            return;
+        if (speed < 1 && tmpBool) {
+            tmpBool = false;
 
+            EventManager.Invoke(EventType.ON_CARAVAN_STOPPED);
+
+            return;
+        }
+
+        UpdateSurroundingsPositions();
+        UpdateCaravanPositions();
+
+        if (Input.GetKeyDown(KeyCode.L)) {
+            SpawnObstacle(tmpObstacle);
+        }
+    }
+
+    private void UpdateSurroundingsPositions() {
         for (int i = Surroundings.Count - 1; i >= 0; i--) {
             var item = Surroundings[i];
 
@@ -65,10 +75,26 @@ public class CaravanWalk : MonoBehaviour
 
             if (item.transform.position == new Vector3(End.transform.position.x, item.transform.position.y, item.transform.position.z)) {
                 Surroundings.RemoveAt(i);
-                Destroy(item);
+
+                StartCoroutine(MoveSurrounding(item.transform, transform.position.y + 2, true));
             }
         }
 
+        if (Surroundings.Count < maxObstacleAmount && Timer(ref treeTimer) <= 0)
+            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime)) <= 1) {
+                SpawnSurroundings(BackgroundPrefabs[Random.Range(0, BackgroundPrefabs.Count)], Random.Range(-.42f, -.3f));
+
+                treeTimer = timer;
+            }
+        if (Surroundings.Count < maxObstacleAmount && Timer(ref bushTimer) <= 0)
+            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime)) <= 1) {
+                SpawnSurroundings(ForegroundPrefabs[Random.Range(0, ForegroundPrefabs.Count)], Random.Range(.3f, .42f));
+
+                bushTimer = timer;
+            }
+    }
+
+    private void UpdateCaravanPositions() {
         for (int i = 0; i < Caravans.Count; i++) {
             Vector3 tmp = new(0, 0, Random.Range(-0.001f, 0.001f));
 
@@ -85,48 +111,21 @@ public class CaravanWalk : MonoBehaviour
 
             var newPos = new Vector3(currentCaravan.position.x, currentCaravan.position.y, currentHorse.position.z);
 
-            currentCaravan.LookAt(currentHorse.position);
+            currentCaravan.LookAt(new Vector3(currentHorse.position.x, transform.position.y + .03f, currentHorse.position.z));
             currentCaravan.position = Vector3.MoveTowards(currentCaravan.position, newPos, speed / 500 * Time.deltaTime);
             currentCaravan.position = new Vector3(currentHorse.position.x + .4f, currentCaravan.position.y, currentCaravan.position.z);
         }
-
-        SpawnNewTree();
-        SpawnNewBush();
-
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            AddCaravan();
-        }
-        if (Input.GetKeyDown(KeyCode.Backspace)) {
-            RemoveCaravan();
-        }
     }
 
-    void SpawnNewTree() {
-        if (Surroundings.Count < maxObstacleAmount && Timer(ref treeTimer) <= 0)
-            if (Random.Range(0, spawnChance * (timer * 10)) <= 1) {
-                var item = Instantiate(BackgroundPrefabs[Random.Range(0, BackgroundPrefabs.Count)], ObjectParent);
+    void SpawnSurroundings(GameObject model, float offset) {
+        var item = Instantiate(model, ObjectParent);
 
-                item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + item.transform.localScale.y / 2, Beginning.transform.position.z + Random.Range(-.42f, -.3f));
-                item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+        item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z + offset);
+        item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
 
-                Surroundings.Add(item);
+        StartCoroutine(MoveSurrounding(item.transform, transform.position.y + item.transform.localScale.y / 2, false));
 
-                treeTimer = timer;
-            }
-    }
-
-    void SpawnNewBush() {
-        if (Surroundings.Count < maxObstacleAmount && Timer(ref bushTimer) <= 0)
-            if (Random.Range(0, spawnChance * (timer * 10)) <= 1) {
-                var item = Instantiate(ForegroundPrefabs[Random.Range(0, ForegroundPrefabs.Count)], ObjectParent);
-
-                item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + item.transform.localScale.y / 2, Beginning.transform.position.z + Random.Range(.3f, .42f));
-                item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
-
-                Surroundings.Add(item);
-
-                bushTimer = timer;
-            }
+        Surroundings.Add(item);
     }
 
     public void AddCaravan() {
@@ -142,7 +141,7 @@ public class CaravanWalk : MonoBehaviour
         Horses.Add(tmpHorse);
 
         var tmpCaravan = Instantiate(Caravan);
-        tmpCaravan.transform.position = new Vector3(transform.position.x + 3f, transform.position.y + .16f, transform.position.z);
+        tmpCaravan.transform.position = new Vector3(transform.position.x + 3f, transform.position.y + .03f, transform.position.z);
         Caravans.Add(tmpCaravan);
 
         for (int i = 0; i < CaravanPositions.Count; i++) {
@@ -169,8 +168,10 @@ public class CaravanWalk : MonoBehaviour
     public void SpawnObstacle(GameObject obstacle) {
         var item = Instantiate(obstacle, ObjectParent);
 
-        item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y, Beginning.transform.position.z);
+        item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z);
         item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+
+        StartCoroutine(MoveSurrounding(item.transform, transform.position.y, false));
 
         Surroundings.Add(item);
 
@@ -179,5 +180,20 @@ public class CaravanWalk : MonoBehaviour
 
     float Timer(ref float timer) {
         return timer -= Time.deltaTime;
+    }
+
+    public IEnumerator MoveSurrounding(Transform model, float targetY, bool destroy) {
+        while (model.transform.position.y != targetY) {
+            model.position = Vector3.MoveTowards(model.position, new Vector3(model.position.x, targetY, model.position.z), speed / 4 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (destroy)
+            Destroy(model.gameObject);
+    }
+
+    public void Restart() {
+
     }
 }
