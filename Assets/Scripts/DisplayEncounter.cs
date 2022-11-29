@@ -58,4 +58,15 @@ public class DisplayEncounter : MonoBehaviour
 
         canvas.gameObject.SetActive(false);
     }
+
+    public IEnumerator MoveSurrounding(Transform model, float targetY, bool destroy) {
+        while (model.transform.position.y != targetY) {
+            model.position = Vector3.MoveTowards(model.position, new Vector3(model.position.x, targetY, model.position.z), 25 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (destroy)
+            Destroy(model.gameObject);
+    }
 }
