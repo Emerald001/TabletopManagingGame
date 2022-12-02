@@ -63,7 +63,7 @@ public class CaravanWalk : MonoBehaviour
         if (tmpBoolStop)
             currentsSpeed -= slowdownModifier * Time.deltaTime;
         else if (tmpBoolGo && currentsSpeed < speed) 
-            currentsSpeed += slowdownModifier * Time.deltaTime;
+            currentsSpeed += slowdownModifier * 3 * Time.deltaTime;
 
         if (currentsSpeed < 1 && tmpBoolStop) {
             tmpBoolStop = false;

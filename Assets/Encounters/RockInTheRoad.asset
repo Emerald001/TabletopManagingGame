@@ -15,6 +15,7 @@ MonoBehaviour:
   name: Rock Blocking the Road
   ObstaclePrefab: {fileID: 1231025492079827288, guid: 27b15a3d2ad64d84cae40da4cb715fa2, type: 3}
   SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
+  BackgroundPrefab: {fileID: 3729258429062638239, guid: 111338ad7914d7347a672a0dfe9de372, type: 3}
   options:
   - Description: Break the rock down
     WoodUse: 2

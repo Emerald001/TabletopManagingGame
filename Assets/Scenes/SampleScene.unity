@@ -3889,6 +3889,7 @@ MonoBehaviour:
   canvas: {fileID: 449328574}
   buttonPrefab: {fileID: 2850212574435807997, guid: 9b3ff849a0f01524e9c24f102f92bde4, type: 3}
   currentEncounter: {fileID: 11400000, guid: 3a93b4b449928f64d843eefdac8c54dc, type: 2}
+  currentBackground: {fileID: 0}
   currentSurrouning: {fileID: 0}
   buttons: []
   index: 0

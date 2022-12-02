@@ -8,6 +8,7 @@ public class EncounterSO : ScriptableObject
     public new string name;
     public GameObject ObstaclePrefab;
     public GameObject SurroundingPrefab;
+    public GameObject BackgroundPrefab;
 
     public List<Option> options = new();
 }

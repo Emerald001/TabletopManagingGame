@@ -8,6 +8,7 @@ public class DisplayEncounter : MonoBehaviour {
     public Button buttonPrefab;
 
     public EncounterSO currentEncounter;
+    public GameObject currentBackground;
     public GameObject currentSurrouning;
 
     public List<GameObject> buttons;
@@ -65,10 +66,31 @@ public class DisplayEncounter : MonoBehaviour {
     public void SetOrder<T>(EncounterSO encounter) {
         index = 0;
 
-        StartCoroutine(MoveDown(encounter));
+        StartCoroutine(SpawnBackground(encounter));
     }
 
-    public IEnumerator MoveDown(EncounterSO encounter) {
+    public IEnumerator SpawnBackground(EncounterSO encounter) {
+        var tmp = Instantiate(encounter.BackgroundPrefab).transform;
+        currentBackground = tmp.gameObject;
+        tmp.position = new Vector3(0, 10, 0);
+
+        while (tmp.position.y != 0) {
+            tmp.position = Vector3.MoveTowards(tmp.position, new Vector3(tmp.position.x, 0, tmp.position.z), 50 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+
+            if (tmp.position.y == 0)
+                break;
+        }
+
+        EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .4f);
+
+        yield return new WaitForSeconds(.2f);
+
+        StartCoroutine(SpawnSurrounding(encounter));
+    }
+
+    public IEnumerator SpawnSurrounding(EncounterSO encounter) {
         var tmp = Instantiate(encounter.SurroundingPrefab).transform;
         currentSurrouning = tmp.gameObject;
         tmp.position = new Vector3(0, 4, .5f);
@@ -119,6 +141,7 @@ public class DisplayEncounter : MonoBehaviour {
         canvas.gameObject.SetActive(false);
 
         RemoveOptions();
+        yield return new WaitForSeconds(.2f);
 
         StartCoroutine(RemoveSurrounding());
     }
@@ -134,6 +157,23 @@ public class DisplayEncounter : MonoBehaviour {
         }
 
         Destroy(currentSurrouning);
+        yield return new WaitForSeconds(.2f);
+
+        StartCoroutine(RemoveBackground());
+    }
+
+    public IEnumerator RemoveBackground() {
+        while (currentBackground.transform.position.y != 10) {
+            currentBackground.transform.position = Vector3.MoveTowards(currentBackground.transform.position, new Vector3(currentBackground.transform.position.x, 10, currentBackground.transform.position.z), 50 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+
+            if (currentBackground.transform.position.y == 10)
+                break;
+        }
+
+        Destroy(currentBackground);
+
         EventManager.Invoke(EventType.ON_ENCOUNTED_ENDED);
     }
 }
