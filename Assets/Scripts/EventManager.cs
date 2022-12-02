@@ -5,7 +5,8 @@ using UnityEngine;
 public enum EventType {
     ON_ENCOUNTER_STARTED,
     ON_CARAVAN_STOPPED,
-    ON_ENCOUNTED_ENDED
+    ON_ENCOUNTED_ENDED,
+    DO_SCREENSHAKE
 }
 
 public static class EventManager {

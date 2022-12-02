@@ -10,20 +10,27 @@ public class CameraShake : MonoBehaviour {
     private bool canShake = false;
     private float _shakeTimer;
 
+    private void OnEnable() {
+        EventManager<float>.Subscribe(EventType.DO_SCREENSHAKE, ShakeCamera);
+    }
+
+    private void OnDisable() {
+        EventManager<float>.Unsubscribe(EventType.DO_SCREENSHAKE, ShakeCamera);
+    }
+
     void Start() {
         orignalCameraPos = cameraTransform.localPosition;
     }
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.E)) {
-            ShakeCamera();
-        }
 
+    void Update() {
         if (canShake) {
             StartCameraShakeEffect();
         }
     }
 
-    public void ShakeCamera() {
+    public void ShakeCamera(float intensity) {
+        shakeAmount = intensity;
+
         canShake = true;
         _shakeTimer = shakeDuration;
     }

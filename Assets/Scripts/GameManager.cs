@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     }
 
     void Update() {
-        
+        if (Input.GetKeyDown(KeyCode.R)) {
+            EventManager.Invoke(EventType.DO_SCREENSHAKE);
+        }
     }
 }
