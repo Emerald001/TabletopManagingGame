@@ -25,27 +25,27 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
-    public void AddResources(int wood, int meat, int gold, float water) {
-        WoodStack.AddItem(wood);
-        MeatStack.AddItem(meat);
-        GoldStack.AddItem(gold);
+    public void AddResources(Option ID) {
+        StartCoroutine(WoodStack.AddItem(ID.Woodgive));
+        StartCoroutine(MeatStack.AddItem(ID.Meatgive));
+        StartCoroutine(GoldStack.AddItem(ID.Goldgive));
 
-        WaterStack.AddLiquid(water);
+        //WaterStack.AddLiquid(water);
     }
 
-    public void ShowResources(int wood, int meat, int gold, float water) {
-        if(HasResources(wood, meat, gold, water))
+    public void ShowResources(Option ID) {
+        if(HasResources(ID.WoodUse, ID.MeatUse, ID.GoldUse, 0))
 
-        WoodStack.ShowItems(wood);
-        MeatStack.ShowItems(meat);
-        GoldStack.ShowItems(gold);
+        WoodStack.ShowItems(ID.WoodUse);
+        MeatStack.ShowItems(ID.MeatUse);
+        GoldStack.ShowItems(ID.GoldUse);
     }
 
-    public void RemoveResources(int wood, int meat, int gold, float water) {
-        WoodStack.RemoveItem(wood);
-        MeatStack.RemoveItem(meat);
-        GoldStack.RemoveItem(gold);
+    public void RemoveResources(Option ID) {
+        StartCoroutine(WoodStack.RemoveItem(ID.WoodUse));
+        StartCoroutine(MeatStack.RemoveItem(ID.MeatUse));
+        StartCoroutine(GoldStack.RemoveItem(ID.GoldUse));
 
-        WaterStack.AddLiquid(water);
+        //WaterStack.AddLiquid(water);
     }
 }

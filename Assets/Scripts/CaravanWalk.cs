@@ -33,17 +33,16 @@ public class CaravanWalk : MonoBehaviour
     private float timer;
     private float currentsSpeed;
 
-    private List<GameObject> CaravanPositions = new();
+    private readonly List<GameObject> CaravanPositions = new();
     private GameObject currentObstacle;
 
-    private bool tmpBoolStop = false;
-    private bool tmpBoolGo = false;
-
     private void OnEnable() {
-        EventManager.Subscribe(EventType.ON_ENCOUNTED_ENDED, Restart);
+        EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
+        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
     }
     private void OnDisable() {
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTED_ENDED, Restart);
+        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
+        EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
     }
 
     void Start() {
@@ -60,26 +59,8 @@ public class CaravanWalk : MonoBehaviour
         timer = Mathf.InverseLerp(100f, 0, currentsSpeed) * timerModifier;
         timer = Mathf.Max(timer, .4f);
 
-        if (tmpBoolStop)
-            currentsSpeed -= slowdownModifier * Time.deltaTime;
-        else if (tmpBoolGo && currentsSpeed < speed) 
-            currentsSpeed += slowdownModifier * 3 * Time.deltaTime;
-
-        if (currentsSpeed < 1 && tmpBoolStop) {
-            tmpBoolStop = false;
-            currentsSpeed = 0;
-
-            EventManager<EncounterSO>.Invoke(EventType.ON_CARAVAN_STOPPED, tmpObstacle);
-
-            return;
-        }
-
         UpdateSurroundingsPositions();
         UpdateCaravanPositions();
-
-        if (Input.GetKeyDown(KeyCode.L)) {
-            SpawnObstacle(tmpObstacle.ObstaclePrefab);
-        }
     }
 
     private void UpdateSurroundingsPositions() {
@@ -95,14 +76,17 @@ public class CaravanWalk : MonoBehaviour
             }
         }
 
+        if (currentsSpeed < 1)
+            return;
+
         if (Surroundings.Count < maxObstacleAmount && Timer(ref treeTimer) <= 0)
-            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime * currentsSpeed)) <= 1) {
+            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime)) <= 1) {
                 SpawnSurroundings(BackgroundPrefabs[Random.Range(0, BackgroundPrefabs.Count)], Random.Range(-.42f, -.3f));
 
                 treeTimer = timer;
             }
         if (Surroundings.Count < maxObstacleAmount && Timer(ref bushTimer) <= 0)
-            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime * currentsSpeed)) <= 1) {
+            if (Random.Range(0, spawnChance * (timer * 10) * (1 - Time.deltaTime)) <= 1) {
                 SpawnSurroundings(ForegroundPrefabs[Random.Range(0, ForegroundPrefabs.Count)], Random.Range(.3f, .42f));
 
                 bushTimer = timer;
@@ -149,7 +133,7 @@ public class CaravanWalk : MonoBehaviour
 
         var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
 
-        var dis = totalWidth / (CaravanPositions.Count + 1);
+        var dis = totalWidth / (CaravanPositions.Count);
 
         var tmpHorse = Instantiate(Horse);
         tmpHorse.transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y + .16f, transform.position.z);
@@ -164,6 +148,7 @@ public class CaravanWalk : MonoBehaviour
         }
     }
 
+    //doesnt work yet
     public void RemoveCaravan() {
         var tmp = CaravanPositions[0];
 
@@ -181,8 +166,6 @@ public class CaravanWalk : MonoBehaviour
     }
 
     public void SpawnObstacle(GameObject obstacle) {
-        tmpBoolGo = false;
-
         var item = Instantiate(obstacle, ObjectParent);
 
         item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z);
@@ -192,8 +175,6 @@ public class CaravanWalk : MonoBehaviour
 
         currentObstacle = item;
         Surroundings.Add(item);
-
-        tmpBoolStop = true;
     }
 
     float Timer(ref float timer) {
@@ -201,22 +182,50 @@ public class CaravanWalk : MonoBehaviour
     }
 
     public IEnumerator MoveSurrounding(Transform model, float targetY, bool destroy, bool shakeScreen) {
+        if(shakeScreen)
+            GameManager.instance.Amanager.PlayAudio("ObstacleHit");
+
         while (model.transform.position.y != targetY) {
             model.position = Vector3.MoveTowards(model.position, new Vector3(model.position.x, targetY, model.position.z), currentsSpeed / 4 * Time.deltaTime);
 
             yield return new WaitForEndOfFrame();
         }
 
-        if (shakeScreen)
+        if (shakeScreen) 
             EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .07f);
 
         if (destroy)
             Destroy(model.gameObject);
     }
 
+    public void StartEncounter(EncounterSO encounter) {
+        SpawnObstacle(encounter.ObstaclePrefab);
+
+        StartCoroutine(SlowDown());
+    }
+
+    public IEnumerator SlowDown() {
+        while (currentsSpeed > 1) {
+            currentsSpeed -= slowdownModifier * Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        currentsSpeed = 0;
+        EventManager<EncounterSO>.Invoke(EventType.ON_CARAVAN_STOPPED, tmpObstacle);
+    }
+
+    public IEnumerator SpeedUp() {
+        while (currentsSpeed < speed) {
+            currentsSpeed += slowdownModifier * 3 * Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
     public void Restart() {
         Surroundings.Remove(currentObstacle);
+        StartCoroutine(SpeedUp());
         StartCoroutine(MoveSurrounding(currentObstacle.transform, 3, true, false));
-        tmpBoolGo = true;
     }
 }

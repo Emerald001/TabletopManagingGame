@@ -6,28 +6,12 @@ public class ResourceStack : MonoBehaviour
 {
     public GameObject Resource;
 
-    public int addAmount;
-    public int removeAmount;
-
     [HideInInspector] public int StackAmount;
     
-    private List<GameObject> ItemStack = new();
+    private readonly List<GameObject> ItemStack = new();
 
     private void Update() {
         StackAmount = ItemStack.Count;
-
-        if (Input.GetKeyDown(KeyCode.U)) {
-            AddItem(addAmount);
-        }
-
-        if (Input.GetKey(KeyCode.O)) {
-            ShowItems(removeAmount);
-        }
-
-        if (Input.GetKeyDown(KeyCode.I)) {
-            RemoveItem(removeAmount);
-        }
-
         for (int i = 0; i < ItemStack.Count; i++) {
             if(ItemStack[i].transform.position.y < 0) {
                 ItemStack[i].GetComponent<Rigidbody>().velocity = new Vector3(0, -.1f, 0);
@@ -41,7 +25,7 @@ public class ResourceStack : MonoBehaviour
         }
     }
 
-    public void AddItem(int amount) {
+    public IEnumerator AddItem(int amount) {
         for (int i = 0; i < amount; i++) {
             var tmp = Instantiate(Resource, transform);
 
@@ -54,17 +38,20 @@ public class ResourceStack : MonoBehaviour
             tmp.transform.localScale = new Vector3(size, size, size);
 
             ItemStack.Add(tmp);
+
+            yield return new WaitForSeconds(.1f);
+
+            GameManager.instance.Amanager.PlayAudio("ResourceGet");
         }
     }
 
     public void ShowItems(int amount) {
         if(ItemStack.Count < amount) {
-            Debug.LogError("Trying to display more Items than in Stack");
             return;
         }
 
         for (int i = 0; i < amount; i++) {
-            var tmp = ItemStack[ItemStack.Count - (i + 1)];
+            var tmp = ItemStack[^(i + 1)];
 
             var DisplayPos = new Vector3(tmp.transform.position.x, transform.position.y + .6f, tmp.transform.position.z);
 
@@ -73,14 +60,14 @@ public class ResourceStack : MonoBehaviour
         }
     }
 
-    public void RemoveItem(int amount) {
+    public IEnumerator RemoveItem(int amount) {
         if (ItemStack.Count < amount) {
             Debug.LogError("Trying to Remove more Items than in Stack");
-            return;
+            yield return null;
         }
 
         for (int i = 0; i < amount; i++) {
-            var tmp = ItemStack[ItemStack.Count - 1];
+            var tmp = ItemStack[^1];
 
             ItemStack.Remove(tmp);
             Destroy(tmp);

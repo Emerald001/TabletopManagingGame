@@ -15,6 +15,7 @@ public class EncounterSO : ScriptableObject
 
 [System.Serializable]
 public struct Option {
+    public string Name;
     public string Description;
 
     [Header("Uses")]

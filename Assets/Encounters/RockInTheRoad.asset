@@ -17,7 +17,9 @@ MonoBehaviour:
   SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
   BackgroundPrefab: {fileID: 3729258429062638239, guid: 111338ad7914d7347a672a0dfe9de372, type: 3}
   options:
-  - Description: Break the rock down
+  - Name: Break the rock down
+    Description: While mining the rock, your men came across a small gold vein. Enough
+      to get some proper chunks.
     WoodUse: 2
     MeatUse: 2
     GoldUse: 0
@@ -26,7 +28,9 @@ MonoBehaviour:
     Meatgive: 0
     Goldgive: 2
     WaterGive: 0
-  - Description: Move the rock
+  - Name: Move the rock
+    Description: Your men move the rock using some wood as levers, it is time consuming,
+      but it does get moved eventually.
     WoodUse: 3
     MeatUse: 2
     GoldUse: 0
@@ -35,12 +39,14 @@ MonoBehaviour:
     Meatgive: 0
     Goldgive: 0
     WaterGive: 0
-  - Description: Find a Way around
+  - Name: Find a Way around
+    Description: Your men lead the caravan around the rock, finding some nice ripe
+      berries on their way. As well as a nice calm river with fresh water.
     WoodUse: 0
     MeatUse: 4
     GoldUse: 0
     WaterUse: 0
-    Woodgive: 2
-    Meatgive: 0
+    Woodgive: 0
+    Meatgive: 2
     Goldgive: 0
     WaterGive: 5

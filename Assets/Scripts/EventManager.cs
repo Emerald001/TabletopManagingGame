@@ -5,12 +5,12 @@ using UnityEngine;
 public enum EventType {
     ON_ENCOUNTER_STARTED,
     ON_CARAVAN_STOPPED,
-    ON_ENCOUNTED_ENDED,
+    ON_ENCOUNTER_ENDED,
     DO_SCREENSHAKE
 }
 
 public static class EventManager {
-    private static Dictionary<EventType, System.Action> eventActions = new();
+    private static readonly Dictionary<EventType, System.Action> eventActions = new();
 
     public static void Subscribe(EventType eventType, System.Action eventToSubscribe) {
         if (!eventActions.ContainsKey(eventType)) {
@@ -31,7 +31,7 @@ public static class EventManager {
 }
 
 public static class EventManager<T> {
-    private static Dictionary<EventType, System.Action<T>> eventActions = new();
+    private static readonly Dictionary<EventType, System.Action<T>> eventActions = new();
 
     public static void Subscribe(EventType eventType, System.Action<T> eventToSubscribe) {
         if (!eventActions.ContainsKey(eventType)) {

@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DisplayEncounter : MonoBehaviour {
-    public Canvas canvas;
+    public Canvas encounterCanvas;
+    public Canvas outcomeCanvas;
     public Button buttonPrefab;
 
     public EncounterSO currentEncounter;
@@ -13,6 +15,9 @@ public class DisplayEncounter : MonoBehaviour {
 
     public List<GameObject> buttons;
     public int index;
+
+    public bool tmpboolWaiting = false;
+    public Option tmpCurrentPickedOption;
 
     public void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder<EncounterSO>);
@@ -23,23 +28,45 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void Update() {
+        if (Input.GetKeyDown(KeyCode.Mouse0) && tmpboolWaiting) {
+            tmpboolWaiting = false;
 
+            StartCoroutine(RemoveOutcome(tmpCurrentPickedOption));
+
+            tmpCurrentPickedOption = new Option();
+        }
     }
 
     public void DisplayTitle(EncounterSO encounter) {
-        canvas.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.name;
+        encounterCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.name;
+    }
+    public void DisplayOutcome(Option ID) {
+        outcomeCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Name;
+        outcomeCanvas.transform.GetChild(3).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Description;
     }
 
     public void DisplayOptions(EncounterSO encounter) {
         for (int i = 0; i < encounter.options.Count; i++) {
-            var tmp = Instantiate(buttonPrefab, canvas.transform);
+            var tmp = Instantiate(buttonPrefab, encounterCanvas.transform);
             tmp.name = "Button " + i.ToString();
-            tmp.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.options[i].Description;
+            tmp.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.options[i].Name;
 
             tmp.GetComponent<RectTransform>().localPosition = new Vector3(0, 150 + i * -200, 0);
 
             var tmpButton = tmp.GetComponent<Button>();
+
+            if (GameManager.instance.Rmanager.WoodStack.StackAmount < encounter.options[i].WoodUse) {
+                tmpButton.interactable = false;
+            }
+            else if (GameManager.instance.Rmanager.MeatStack.StackAmount < encounter.options[i].MeatUse) {
+                tmpButton.interactable = false;
+            }
+            else if (GameManager.instance.Rmanager.GoldStack.StackAmount < encounter.options[i].GoldUse) {
+                tmpButton.interactable = false;
+            }
+
             var param = i;
+
             tmpButton.onClick.AddListener(delegate { ChoseOption(param); });
 
             buttons.Add(tmp.gameObject);
@@ -60,7 +87,14 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void ChoseOption(int ID) {
-        StartCoroutine(RollEncounter());
+        foreach (var item in buttons) {
+            item.GetComponent<Button>().interactable = false;
+        }
+
+        StartCoroutine(RollEncounter(currentEncounter.options[ID]));
+        GameManager.instance.Rmanager.RemoveResources(currentEncounter.options[ID]);
+
+        tmpCurrentPickedOption = currentEncounter.options[ID];
     }
 
     public void SetOrder<T>(EncounterSO encounter) {
@@ -73,6 +107,8 @@ public class DisplayEncounter : MonoBehaviour {
         var tmp = Instantiate(encounter.BackgroundPrefab).transform;
         currentBackground = tmp.gameObject;
         tmp.position = new Vector3(0, 10, 0);
+
+        GameManager.instance.Amanager.PlayAudio("BackgroundHit");
 
         while (tmp.position.y != 0) {
             tmp.position = Vector3.MoveTowards(tmp.position, new Vector3(tmp.position.x, 0, tmp.position.z), 50 * Time.deltaTime);
@@ -95,6 +131,8 @@ public class DisplayEncounter : MonoBehaviour {
         currentSurrouning = tmp.gameObject;
         tmp.position = new Vector3(0, 4, .5f);
 
+        GameManager.instance.Amanager.PlayAudio("ForegroundHit");
+
         while (tmp.position.y != 1.6) {
             tmp.position = Vector3.MoveTowards(tmp.position, new Vector3(tmp.position.x, 1.6f, tmp.position.z), 25 * Time.deltaTime);
 
@@ -113,10 +151,12 @@ public class DisplayEncounter : MonoBehaviour {
 
     public IEnumerator UnrollEncounter(EncounterSO encounter) {
         transform.position += new Vector3(0, 2, 0);
-        canvas.gameObject.SetActive(true);
+        encounterCanvas.gameObject.SetActive(true);
 
         DisplayOptions(encounter);
         DisplayTitle(currentEncounter);
+
+        GameManager.instance.Amanager.PlayAudio("PaperRoll");
 
         while (transform.position.y != 1.68) {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 1.68f, transform.position.z), 10 * Time.deltaTime);
@@ -128,7 +168,7 @@ public class DisplayEncounter : MonoBehaviour {
         }
     }
 
-    public IEnumerator RollEncounter() {
+    public IEnumerator RollEncounter(Option pickedOption) {
         while (transform.position.y != 3.68f) {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 3.68f, transform.position.z), 10 * Time.deltaTime);
 
@@ -138,12 +178,12 @@ public class DisplayEncounter : MonoBehaviour {
                 break;
         }
 
-        canvas.gameObject.SetActive(false);
+        encounterCanvas.gameObject.SetActive(false);
 
         RemoveOptions();
         yield return new WaitForSeconds(.2f);
 
-        StartCoroutine(RemoveSurrounding());
+        StartCoroutine(ShowOutcome(pickedOption));
     }
 
     public IEnumerator RemoveSurrounding() {
@@ -174,6 +214,45 @@ public class DisplayEncounter : MonoBehaviour {
 
         Destroy(currentBackground);
 
-        EventManager.Invoke(EventType.ON_ENCOUNTED_ENDED);
+        EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
+    }
+
+    public IEnumerator ShowOutcome(Option pickedOption) {
+        transform.position += new Vector3(0, 2, 0);
+        outcomeCanvas.gameObject.SetActive(true);
+
+        DisplayOutcome(pickedOption);
+
+        GameManager.instance.Amanager.PlayAudio("PaperRoll");
+
+        while (transform.position.y != 1.68) {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 1.68f, transform.position.z), 10 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+
+            if (transform.position.y == 1.68f)
+                break;
+        }
+
+        tmpboolWaiting = true;
+    }
+
+    public IEnumerator RemoveOutcome(Option pickedOption) {
+        GameManager.instance.Rmanager.AddResources(pickedOption);
+
+        while (transform.position.y != 3.68f) {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 3.68f, transform.position.z), 10 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+
+            if (transform.position.y == 3.68f)
+                break;
+        }
+
+        outcomeCanvas.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(.2f);
+
+        StartCoroutine(RemoveSurrounding());
     }
 }
