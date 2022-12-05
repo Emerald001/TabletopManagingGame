@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: RockInTheRoad
+  m_EditorClassIdentifier: 
+  name: Rock Blocking the Road
+  lightColor: {r: 0.7264151, g: 0.65431124, b: 0.46942863, a: 1}
+  ObstaclePrefab: {fileID: 1231025492079827288, guid: 27b15a3d2ad64d84cae40da4cb715fa2, type: 3}
+  SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
+  BackgroundPrefab: {fileID: 3729258429062638239, guid: 111338ad7914d7347a672a0dfe9de372, type: 3}
+  options:
+  - Name: Break the rock down
+    Description: While mining the rock, your men came across a small gold vein. Enough
+      to get some proper chunks.
+    WoodUse: 2
+    MeatUse: 2
+    GoldUse: 0
+    WaterUse: 1
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 2
+    WaterGive: 0
+  - Name: Move the rock
+    Description: Your men move the rock using some wood as levers, it is time consuming,
+      but it does get moved eventually.
+    WoodUse: 3
+    MeatUse: 2
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: Find a Way around
+    Description: Your men lead the caravan around the rock, finding some nice ripe
+      berries on their way. As well as a nice calm river with fresh water.
+    WoodUse: 0
+    MeatUse: 4
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 2
+    Goldgive: 0
+    WaterGive: 5

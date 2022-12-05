@@ -11,8 +11,6 @@ public class CaravanWalk : MonoBehaviour
     public GameObject Horse;
     public Transform ObjectParent;
 
-    public EncounterSO tmpObstacle;
-
     public List<GameObject> Horses = new();
     public List<GameObject> Caravans = new();
     public List<GameObject> Surroundings = new();
@@ -169,7 +167,7 @@ public class CaravanWalk : MonoBehaviour
         var item = Instantiate(obstacle, ObjectParent);
 
         item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z);
-        item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+        //item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
 
         StartCoroutine(MoveSurrounding(item.transform, transform.position.y, false, true));
 
@@ -201,10 +199,10 @@ public class CaravanWalk : MonoBehaviour
     public void StartEncounter(EncounterSO encounter) {
         SpawnObstacle(encounter.ObstaclePrefab);
 
-        StartCoroutine(SlowDown());
+        StartCoroutine(SlowDown(encounter));
     }
 
-    public IEnumerator SlowDown() {
+    public IEnumerator SlowDown(EncounterSO encounter) {
         while (currentsSpeed > 1) {
             currentsSpeed -= slowdownModifier * Time.deltaTime;
 
@@ -212,7 +210,7 @@ public class CaravanWalk : MonoBehaviour
         }
 
         currentsSpeed = 0;
-        EventManager<EncounterSO>.Invoke(EventType.ON_CARAVAN_STOPPED, tmpObstacle);
+        EventManager<EncounterSO>.Invoke(EventType.ON_CARAVAN_STOPPED, encounter);
     }
 
     public IEnumerator SpeedUp() {

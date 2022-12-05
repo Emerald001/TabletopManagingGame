@@ -9,7 +9,9 @@ public class DisplayEncounter : MonoBehaviour {
     public Canvas outcomeCanvas;
     public Button buttonPrefab;
 
-    public EncounterSO currentEncounter;
+    public Color standardCandleColors;
+    public List<Light> candleLights;
+
     public GameObject currentBackground;
     public GameObject currentSurrouning;
 
@@ -18,13 +20,15 @@ public class DisplayEncounter : MonoBehaviour {
 
     public bool tmpboolWaiting = false;
     public Option tmpCurrentPickedOption;
+    
+    private EncounterSO currentEncounter;
 
     public void OnEnable() {
-        EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder<EncounterSO>);
+        EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
     }
 
     public void OnDisable() {
-        EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, SetOrder<EncounterSO>);
+        EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
     }
 
     public void Update() {
@@ -97,10 +101,23 @@ public class DisplayEncounter : MonoBehaviour {
         tmpCurrentPickedOption = currentEncounter.options[ID];
     }
 
-    public void SetOrder<T>(EncounterSO encounter) {
+    public void SetOrder(EncounterSO encounter) {
         index = 0;
+        currentEncounter = encounter;
+
+        foreach (var item in candleLights) {
+            StartCoroutine(SetColor(item, encounter.lightColor));
+        }
 
         StartCoroutine(SpawnBackground(encounter));
+    }
+
+    public IEnumerator SetColor(Light light, Color color) {
+        while (light.color != color) {
+            light.color = Color.LerpUnclamped(light.color, color, Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public IEnumerator SpawnBackground(EncounterSO encounter) {
@@ -154,7 +171,7 @@ public class DisplayEncounter : MonoBehaviour {
         encounterCanvas.gameObject.SetActive(true);
 
         DisplayOptions(encounter);
-        DisplayTitle(currentEncounter);
+        DisplayTitle(encounter);
 
         GameManager.instance.Amanager.PlayAudio("PaperRoll");
 
@@ -212,6 +229,9 @@ public class DisplayEncounter : MonoBehaviour {
                 break;
         }
 
+        foreach (var item in candleLights) {
+            StartCoroutine(SetColor(item, standardCandleColors));
+        }
         Destroy(currentBackground);
 
         EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
