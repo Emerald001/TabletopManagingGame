@@ -10,14 +10,6 @@ public class ResourceManager : MonoBehaviour
 
     public LiquidStack WaterStack;
 
-    void Start() {
-        
-    }
-
-    void Update() {
-        
-    }
-
     public bool HasResources(int wood, int meat, int gold, float water) {
         if (WoodStack.StackAmount < wood || MeatStack.StackAmount < meat || GoldStack.StackAmount < gold)
             return false;

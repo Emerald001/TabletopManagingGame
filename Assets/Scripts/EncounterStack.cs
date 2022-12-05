@@ -8,12 +8,16 @@ public class EncounterStack : MonoBehaviour
     public bool CanClick;
     public bool Hovering;
 
-    public Transform Card;
+    public GameObject CardPrefab;
     public Transform CardPos;
     public Transform LiftedCardPos;
     public Transform DisplayPos;
+    public Transform SlamDownPos;
+    public Transform EndCardPos;
 
     private List<EncounterSO> allEncounters;
+    [HideInInspector] public Transform CurrentCard;
+    [HideInInspector] public Transform lastCard;
 
     private void OnEnable() {
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
@@ -23,33 +27,35 @@ public class EncounterStack : MonoBehaviour
     }
 
     void Start() {
-        var tmp = Resources.FindObjectsOfTypeAll<EncounterSO>();
+        CurrentCard = Instantiate(CardPrefab).transform;
+
+        CurrentCard.position =  CardPos.position;
+        CurrentCard.rotation = CardPos.rotation;
+
+        var tmp = Resources.LoadAll<EncounterSO>("Encounters");
 
         allEncounters = new(tmp);
-
-        Debug.Log(allEncounters.Count);
     }
 
     void Update() {
-        if (!CanClick) {
-            Card.position = Vector3.MoveTowards(Card.position, DisplayPos.position, 10 * Time.deltaTime);
-            Card.rotation = Quaternion.Lerp(Card.rotation, DisplayPos.rotation, 30 * Time.deltaTime);
+        if (!CanClick)
             return;
-        }
 
         CheckForHover();
 
         if (Hovering) {
-            Card.position = Vector3.MoveTowards(Card.position, LiftedCardPos.position, Time.deltaTime);
-            Card.rotation = Quaternion.Lerp(Card.rotation, LiftedCardPos.rotation, 15 * Time.deltaTime);
+            CurrentCard.position = Vector3.MoveTowards(CurrentCard.position, LiftedCardPos.position, Time.deltaTime);
+            CurrentCard.rotation = Quaternion.Lerp(CurrentCard.rotation, LiftedCardPos.rotation, 15 * Time.deltaTime);
         }
         else {
-            Card.position = Vector3.MoveTowards(Card.position, CardPos.position, Time.deltaTime);
-            Card.rotation = Quaternion.Lerp(Card.rotation, CardPos.rotation, 15 * Time.deltaTime);
+            CurrentCard.position = Vector3.MoveTowards(CurrentCard.position, CardPos.position, Time.deltaTime);
+            CurrentCard.rotation = Quaternion.Lerp(CurrentCard.rotation, CardPos.rotation, 15 * Time.deltaTime);
         }
 
         if(Hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
             EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, GetEncounter());
+
+            StartCoroutine(MoveCard(DisplayPos, false, false));
 
             CanClick = false;
         }
@@ -71,5 +77,37 @@ public class EncounterStack : MonoBehaviour
         return allEncounters[Random.Range(0, allEncounters.Count)];
     }
 
-    public void ResetClick() => CanClick = true;
+    public void ResetClick() {
+        StartCoroutine(MoveCard(SlamDownPos, true, false));
+    }
+
+    private IEnumerator MoveCard(Transform targetPos, bool slam, bool end) {
+        while (CurrentCard.position != targetPos.position) {
+            CurrentCard.position = Vector3.MoveTowards(CurrentCard.position, targetPos.position, 10 * Time.deltaTime);
+            CurrentCard.rotation = Quaternion.Lerp(CurrentCard.rotation, targetPos.rotation, 30 * Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (slam) {
+            yield return new WaitForSeconds(.3f);
+            StartCoroutine(MoveCard(EndCardPos, false, true));
+        }
+
+        if (end) {
+            EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .2f);
+
+            if(lastCard)
+                Destroy(lastCard.gameObject);
+
+            lastCard = CurrentCard;
+
+            CurrentCard = Instantiate(CardPrefab).transform;
+
+            CurrentCard.position = CardPos.position;
+            CurrentCard.rotation = CardPos.rotation;
+
+            CanClick = true;
+        }
+    }
 }
