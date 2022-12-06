@@ -22,7 +22,7 @@ public class ResourceManager : MonoBehaviour
         StartCoroutine(MeatStack.AddItem(ID.Meatgive));
         StartCoroutine(GoldStack.AddItem(ID.Goldgive));
 
-        //WaterStack.AddLiquid(water);
+        WaterStack.AddLiquid(ID.WaterGive);
     }
 
     public void ShowResources(Option ID) {
@@ -38,6 +38,6 @@ public class ResourceManager : MonoBehaviour
         StartCoroutine(MeatStack.RemoveItem(ID.MeatUse));
         StartCoroutine(GoldStack.RemoveItem(ID.GoldUse));
 
-        //WaterStack.AddLiquid(water);
+        WaterStack.RemoveLiquid(ID.WaterUse);
     }
 }

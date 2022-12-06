@@ -29,10 +29,10 @@ public class CaravanWalk : MonoBehaviour
     private float treeTimer = .3f;
     private float bushTimer = .3f;
     private float timer;
-    private float currentsSpeed;
+    [HideInInspector] public float currentsSpeed;
 
     private readonly List<GameObject> CaravanPositions = new();
-    private GameObject currentObstacle;
+    [HideInInspector] public GameObject currentObstacle;
 
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);

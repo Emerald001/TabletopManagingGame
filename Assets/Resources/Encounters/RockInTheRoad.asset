@@ -27,7 +27,7 @@ MonoBehaviour:
     WaterUse: 1
     Woodgive: 0
     Meatgive: 0
-    Goldgive: 2
+    Goldgive: 3
     WaterGive: 0
   - Name: Move the rock
     Description: Your men move the rock using some wood as levers, it is time consuming,
