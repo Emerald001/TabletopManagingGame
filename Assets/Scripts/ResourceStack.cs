@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResourceStack : MonoBehaviour
 {
-    public GameObject Resource;
+    public List<GameObject> Resources = new();
 
     [HideInInspector] public int StackAmount;
     
@@ -27,7 +27,7 @@ public class ResourceStack : MonoBehaviour
 
     public IEnumerator AddItem(int amount) {
         for (int i = 0; i < amount; i++) {
-            var tmp = Instantiate(Resource, transform);
+            var tmp = Instantiate(Resources[Random.Range(0, Resources.Count)], transform);
 
             tmp.GetComponent<Rigidbody>().velocity = new Vector3(0, -.1f, 0);
 

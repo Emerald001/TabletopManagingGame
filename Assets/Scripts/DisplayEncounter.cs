@@ -104,16 +104,12 @@ public class DisplayEncounter : MonoBehaviour {
         index = 0;
         currentEncounter = encounter;
 
-        foreach (var item in candleLights) {
-            StartCoroutine(SetColor(item, encounter.lightColor));
-        }
-
         StartCoroutine(SpawnBackground(encounter));
     }
 
     public IEnumerator SetColor(Light light, Color color) {
         while (light.color != color) {
-            light.color = Color.LerpUnclamped(light.color, color, Time.deltaTime);
+            light.color = color;
 
             yield return new WaitForEndOfFrame();
         }
@@ -133,6 +129,10 @@ public class DisplayEncounter : MonoBehaviour {
 
             if (tmp.position.y == 0)
                 break;
+        }
+
+        foreach (var item in candleLights) {
+            StartCoroutine(SetColor(item, encounter.lightColor));
         }
 
         EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .4f);

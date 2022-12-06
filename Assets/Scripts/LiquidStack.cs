@@ -9,12 +9,12 @@ public class LiquidStack : MonoBehaviour
     public int addAmount;
     public int removeAmount;
 
-    void Start() {
-        
-    }
+    [Range(0.01f, 1f)]
+    public float size;
 
-    void Update() {
-        
+    private void Update() {
+        Resource.transform.localPosition = new Vector3(0, size, 0);
+        Resource.transform.localScale = new Vector3(.7f, size, .7f);
     }
 
     public void AddLiquid(float amount) {

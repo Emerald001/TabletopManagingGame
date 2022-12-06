@@ -647,7 +647,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2aaf380ca21554ebf9827e538720f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resource: {fileID: 531502768914822997, guid: 8c13714763a43b0438d480cb7455a41c, type: 3}
+  Resources:
+  - {fileID: 1184262510706101303, guid: 0207efdf4a44d4845954a2a031b58b88, type: 3}
+  - {fileID: 86868019618234642, guid: f418aba1105ea9744b35fd9121d08b12, type: 3}
+  - {fileID: 8490442920962766342, guid: c14a7f2faf474334bada94d7acf8f912, type: 3}
+  - {fileID: 1955426201173433066, guid: c12b33557573aaa48af5ba2e8267a1a1, type: 3}
+  - {fileID: 5025683810905919739, guid: 778edc000c631054fbb6ec5c891bb240, type: 3}
+  - {fileID: 1782116708535102008, guid: c154523e43bd4a343a7fedcab2c7e040, type: 3}
+  - {fileID: 9135724793367844961, guid: 5815c0a4cc4f39045b5132e5d2900507, type: 3}
   StackAmount: 0
 --- !u!1001 &102419731
 PrefabInstance:
@@ -1115,7 +1122,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 276761274}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.775, z: 0}
+  m_LocalPosition: {x: 0, y: 0.082, z: 0}
   m_LocalScale: {x: 0.7, y: 0.05, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1156,7 +1163,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 06b31a836bc095c49be5a889641b7c01, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2811,7 +2818,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 718061068}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5140003, y: 1.2641275, z: -3.97401}
+  m_LocalPosition: {x: -1.5140003, y: 2, z: -3.97401}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2835,6 +2842,7 @@ MonoBehaviour:
   Resource: {fileID: 276761274}
   addAmount: 0
   removeAmount: 0
+  size: 0.05
 --- !u!1 &756273131
 GameObject:
   m_ObjectHideFlags: 0
@@ -3413,7 +3421,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2aaf380ca21554ebf9827e538720f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resource: {fileID: 1811707381446802737, guid: 87a2740b31795fd4a8540903cd6bb140, type: 3}
+  Resources:
+  - {fileID: 1811707381446802737, guid: 87a2740b31795fd4a8540903cd6bb140, type: 3}
+  - {fileID: 287761669820878659, guid: 20b85b7ca46fd55419e24ecc2032cd04, type: 3}
+  - {fileID: 7657358008642460964, guid: 5cb1762b271d6c142a8ab57c3aa1e699, type: 3}
   StackAmount: 0
 --- !u!1 &1007578839 stripped
 GameObject:
@@ -3752,7 +3763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 33536e7bb2c55e54080732f0a6c9267e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.74
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 33536e7bb2c55e54080732f0a6c9267e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5067,6 +5078,7 @@ MonoBehaviour:
   SlamDownPos: {fileID: 794339876}
   EndCardPos: {fileID: 1112366680}
   CurrentCard: {fileID: 0}
+  lastCard: {fileID: 0}
 --- !u!65 &1725011519
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5190,7 +5202,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2aaf380ca21554ebf9827e538720f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resource: {fileID: 4290136975816526756, guid: d4a57697571de46458cf5c76447baebc, type: 3}
+  Resources:
+  - {fileID: 4290136975816526756, guid: d4a57697571de46458cf5c76447baebc, type: 3}
+  - {fileID: 3118865854212495568, guid: 48825e41511837c46b06f91b1d9d2dad, type: 3}
+  - {fileID: 2316132357592998671, guid: 646cb0683edbc8e48871b149545b65fe, type: 3}
+  - {fileID: 2813551881791601775, guid: 0404b2ce3ddbce14995d0ecdc359fe26, type: 3}
   StackAmount: 0
 --- !u!1 &1776885394
 GameObject:
