@@ -111,7 +111,7 @@ public class EncounterStack : MonoBehaviour
         if (slam) {
             yield return new WaitForSeconds(.3f);
 
-            GameManager.instance.Amanager.PlayAudio("ObstacleHit");
+            GameManager.instance.Amanager.PlayAudio("ForegroundHit");
 
             var tmp = EndCardPos;
             StartCoroutine(MoveCard(tmp, false, true));
