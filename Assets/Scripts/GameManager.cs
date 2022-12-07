@@ -20,11 +20,13 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
+        EventManager.Subscribe(EventType.ON_GAME_STARTED, Init);
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
     }
 
     private void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
+        EventManager.Unsubscribe(EventType.ON_GAME_STARTED, Init);
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
     }
 
@@ -32,10 +34,9 @@ public class GameManager : MonoBehaviour
         Amanager.Init();
 
         Amanager.PlayLoopedAudio("BackgroundMusic", true);
+    }
 
-        Mmanager.AddCaravan();
-        Mmanager.AddCaravan();
-
+    public void Init() {
         Rmanager.AddResources(startingResources);
     }
 

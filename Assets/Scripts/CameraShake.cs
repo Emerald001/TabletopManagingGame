@@ -19,7 +19,7 @@ public class CameraShake : MonoBehaviour {
     }
 
     void Start() {
-        orignalCameraPos = cameraTransform.localPosition;
+
     }
 
     void Update() {
@@ -30,6 +30,7 @@ public class CameraShake : MonoBehaviour {
 
     public void ShakeCamera(float intensity) {
         shakeAmount = intensity;
+        orignalCameraPos = cameraTransform.localPosition;
 
         canShake = true;
         _shakeTimer = shakeDuration;

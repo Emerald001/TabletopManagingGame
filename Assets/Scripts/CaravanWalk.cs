@@ -51,6 +51,18 @@ public class CaravanWalk : MonoBehaviour
         var tmp = new GameObject();
         tmp.transform.position = new Vector3(transform.position.x, transform.position.y + .15f, transform.position.z);
         CaravanPositions.Add(tmp);
+
+        var tmp2 = new GameObject();
+        tmp2.transform.position = new Vector3(transform.position.x, transform.position.y + .15f, transform.position.z);
+        CaravanPositions.Add(tmp2);
+
+        var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
+
+        var dis = totalWidth / (CaravanPositions.Count);
+
+        for (int i = 0; i < CaravanPositions.Count; i++) {
+            CaravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
+        }
     }
 
     void Update() {

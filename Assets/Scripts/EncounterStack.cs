@@ -21,14 +21,15 @@ public class EncounterStack : MonoBehaviour
 
     private void OnEnable() {
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
+        EventManager<EncounterSO>.Subscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
     private void OnDisable() {
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
+        EventManager<EncounterSO>.Unsubscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
 
     void Start() {
         CurrentCard = Instantiate(CardPrefab).transform;
-
         CurrentCard.SetPositionAndRotation(CardPos.position, CardPos.rotation);
 
         var tmp = Resources.LoadAll<EncounterSO>("Encounters");
@@ -50,11 +51,7 @@ public class EncounterStack : MonoBehaviour
         }
 
         if(Hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
-            EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, GetEncounter());
-
-            StartCoroutine(MoveCard(DisplayPos, false, false));
-
-            CanClick = false;
+            StartEncounter(allEncounters[Random.Range(0, allEncounters.Count)]);
         }
     }
 
@@ -69,11 +66,17 @@ public class EncounterStack : MonoBehaviour
         }
     }
 
-    public EncounterSO GetEncounter() {
-        return allEncounters[Random.Range(0, allEncounters.Count)];
+    public void StartEncounter(EncounterSO encounter) {
+        EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, encounter);
+
+        StartCoroutine(MoveCard(DisplayPos, false, false));
+
+        CanClick = false;
     }
 
     public void ResetClick() {
+        CanClick = false;
+
         StartCoroutine(MoveCard(SlamDownPos, true, false));
     }
      
