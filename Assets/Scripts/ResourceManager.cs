@@ -18,11 +18,25 @@ public class ResourceManager : MonoBehaviour
     }
 
     public void AddResources(Option ID) {
-        StartCoroutine(WoodStack.AddItem(ID.Woodgive));
-        StartCoroutine(MeatStack.AddItem(ID.Meatgive));
-        StartCoroutine(GoldStack.AddItem(ID.Goldgive));
+        if (ID.Woodgive < 0)
+            StartCoroutine(WoodStack.RemoveItem(Mathf.Abs(ID.Woodgive)));
+        else
+            StartCoroutine(WoodStack.AddItem(ID.Woodgive));
 
-        WaterStack.AddLiquid(ID.WaterGive);
+        if (ID.Meatgive < 0)
+            StartCoroutine(MeatStack.RemoveItem(Mathf.Abs(ID.Meatgive)));
+        else
+            StartCoroutine(MeatStack.AddItem(ID.Meatgive));
+
+        if (ID.Goldgive < 0)
+            StartCoroutine(GoldStack.RemoveItem(Mathf.Abs(ID.Goldgive)));
+        else
+            StartCoroutine(GoldStack.AddItem(ID.Goldgive));
+
+        if (ID.WaterGive < 0)
+            WaterStack.RemoveLiquid(Mathf.Abs(ID.WaterGive));
+        else
+            WaterStack.AddLiquid(ID.WaterGive);
     }
 
     public void ShowResources(Option ID) {

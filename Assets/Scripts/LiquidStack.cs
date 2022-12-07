@@ -11,6 +11,8 @@ public class LiquidStack : MonoBehaviour
 
     private float targetHeight;
 
+    [HideInInspector] public float StackAmount;
+
     private void Update() {
         targetHeight = Mathf.Lerp(targetHeight, size, .5f * Time.deltaTime);
 
@@ -23,10 +25,14 @@ public class LiquidStack : MonoBehaviour
             size += amount / 100;
         else
             size = .45f;
+
+        StackAmount = size * 100;
     }
 
     public void RemoveLiquid(float amount) {
         if(size > amount / 100)
             size -= amount / 100;
+
+        StackAmount = size * 100;
     }
 }

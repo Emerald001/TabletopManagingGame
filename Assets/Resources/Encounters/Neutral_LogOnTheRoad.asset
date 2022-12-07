@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: Neutral_LogOnTheRoad
+  m_EditorClassIdentifier: 
+  name: Log On the Path
+  lightColor: {r: 0.9245283, g: 0.6485945, b: 0.45790315, a: 1}
+  ObstaclePrefab: {fileID: 1076251486661912680, guid: 15124de549e606d499a2c43ab17f3098, type: 3}
+  SurroundingPrefab: {fileID: 6388449673953122018, guid: f445a267610131646b29990133891a75, type: 3}
+  BackgroundPrefab: {fileID: 1952459534103850795, guid: 889ff42915c3b244292e522af0d285fd, type: 3}
+  options:
+  - Name: Break the log down
+    Description: You break the log down, using some tools. But the wood you get from
+      it is enough to repair and even make some more tools.
+    WoodUse: 2
+    MeatUse: 1
+    GoldUse: 0
+    WaterUse: 3
+    Woodgive: 4
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: Move the Log
+    Description: Your men move the log out of the way, using a few tools in the meantime.
+    WoodUse: 2
+    MeatUse: 2
+    GoldUse: 0
+    WaterUse: 3
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: Find a way around
+    Description: Your men look around before finding a nice little path around. You
+      find some water on your way.
+    WoodUse: 0
+    MeatUse: 3
+    GoldUse: 0
+    WaterUse: 2
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 5

@@ -67,6 +67,9 @@ public class DisplayEncounter : MonoBehaviour {
             else if (GameManager.instance.Rmanager.GoldStack.StackAmount < encounter.options[i].GoldUse) {
                 tmpButton.interactable = false;
             }
+            else if (GameManager.instance.Rmanager.WaterStack.StackAmount < encounter.options[i].WaterUse) {
+                tmpButton.interactable = false;
+            }
 
             var param = i;
 

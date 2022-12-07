@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: Bad_Tracks
+  m_EditorClassIdentifier: 
+  name: Animal Tracks
+  lightColor: {r: 0.84122324, g: 0.9811321, b: 0.31933072, a: 0}
+  ObstaclePrefab: {fileID: 8818938584739417411, guid: e3804b37dda5a4d4893858a735932b35, type: 3}
+  SurroundingPrefab: {fileID: 6388449673953122018, guid: f445a267610131646b29990133891a75, type: 3}
+  BackgroundPrefab: {fileID: 1952459534103850795, guid: 889ff42915c3b244292e522af0d285fd, type: 3}
+  options:
+  - Name: Go after the animals
+    Description: You decide to follow the tracks, with a few men you reach an open
+      area. You can see that deer have been here, but they are long gone.
+    WoodUse: 0
+    MeatUse: 2
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: -3
+  - Name: Wait for more animals to come by
+    Description: Your men sit patiently, hoping more deer will come by. They are
+      unlucky, no deer seem to come by.
+    WoodUse: 0
+    MeatUse: 0
+    GoldUse: 0
+    WaterUse: 4
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: Ignore the tracks and continue
+    Description: You chose to ignore the tracks, continuing your quest.
+    WoodUse: 0
+    MeatUse: 0
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0

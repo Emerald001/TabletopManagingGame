@@ -69,6 +69,10 @@ public class ResourceStack : MonoBehaviour
         for (int i = 0; i < amount; i++) {
             var tmp = ItemStack[^1];
 
+            tmp.GetComponent<Rigidbody>().velocity = new Vector3(0, 10, 0);
+
+            yield return new WaitForSeconds(.3f);
+
             ItemStack.Remove(tmp);
             Destroy(tmp);
         }
