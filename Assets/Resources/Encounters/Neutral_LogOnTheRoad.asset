@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Neutral_LogOnTheRoad
   m_EditorClassIdentifier: 
   name: Log On the Path
+  Icon: {fileID: 21300000, guid: 9c11202bd58b74e46a352800b29dfb8e, type: 3}
   lightColor: {r: 0.9245283, g: 0.6485945, b: 0.45790315, a: 1}
   ObstaclePrefab: {fileID: 1076251486661912680, guid: 15124de549e606d499a2c43ab17f3098, type: 3}
   SurroundingPrefab: {fileID: 6388449673953122018, guid: f445a267610131646b29990133891a75, type: 3}

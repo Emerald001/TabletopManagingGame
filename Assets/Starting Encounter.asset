@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Starting Encounter
   m_EditorClassIdentifier: 
   name: Starting Resources
+  Icon: {fileID: 21300000, guid: 925de20dfac114e498593678a6bf5c25, type: 3}
   lightColor: {r: 1, g: 0.7796786, b: 0.5235849, a: 1}
   ObstaclePrefab: {fileID: 7196132047402888154, guid: b205589705125514fbfb51bb05bbb10a, type: 3}
   SurroundingPrefab: {fileID: 978758315269923260, guid: 2c0284e4da45eb04fb4c689c40b2cb84, type: 3}

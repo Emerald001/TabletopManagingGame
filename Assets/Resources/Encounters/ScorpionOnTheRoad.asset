@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: ScorpionOnTheRoad
+  m_EditorClassIdentifier: 
+  name: Scorpion on the road
+  Icon: {fileID: 21300000, guid: d7e48d32e6926304b8733dd392ac18bf, type: 3}
+  lightColor: {r: 1, g: 0.6130317, b: 0.4669811, a: 1}
+  ObstaclePrefab: {fileID: 6903261263800730523, guid: a2289791d2505a14fa5fc6a449605362, type: 3}
+  SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
+  BackgroundPrefab: {fileID: 3729258429062638239, guid: 111338ad7914d7347a672a0dfe9de372, type: 3}
+  options:
+  - Name: KILL IT
+    Description: You smash the scorpion with a stick... It dies.
+    WoodUse: 1
+    MeatUse: 0
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: RUN
+    Description: You run like hell, it was really easy to avoid the scoprpion actually
+    WoodUse: 0
+    MeatUse: 1
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0

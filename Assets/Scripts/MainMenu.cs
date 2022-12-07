@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
         Menu.SetActive(false);
 
         EventManager<EncounterSO>.Invoke(EventType.ON_GAME_STARTED, StartEncounter);
+        EventManager<bool>.Invoke(EventType.ON_GAME_STARTED, true);
         EventManager.Invoke(EventType.ON_GAME_STARTED);
     }
 

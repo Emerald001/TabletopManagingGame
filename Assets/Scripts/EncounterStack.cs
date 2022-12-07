@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class EncounterStack : MonoBehaviour
 {
@@ -49,17 +50,17 @@ public class EncounterStack : MonoBehaviour
 
         if (Displaying) {
             if (Input.GetKeyDown(KeyCode.Mouse0))
-                ResetCards();
+                StartCoroutine(ResetCards());
             return;
         }
 
         CheckForHover();
 
         if (Hovering) {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, LiftedCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, LiftedCardPos.rotation, 15 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, LiftedCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, LiftedCardPos.rotation, 20 * Time.deltaTime));
         }
         else {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CardPos.rotation, 15 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CardPos.rotation, 20 * Time.deltaTime));
         }
 
         if (Hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
@@ -67,7 +68,7 @@ public class EncounterStack : MonoBehaviour
         }
 
         if (HoveringOldStack && Input.GetKeyDown(KeyCode.Mouse0)) {
-            DisplayCards();
+            StartCoroutine(DisplayCards());
         }
     }
 
@@ -88,8 +89,12 @@ public class EncounterStack : MonoBehaviour
     }
 
     public void StartEncounter(EncounterSO encounter) {
+        GameManager.instance.Amanager.PlayAudio("CardGrab");
+
         EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, encounter);
 
+        CurrentCard.GetChild(1).GetComponent<TextMeshPro>().text = encounter.name;
+        CurrentCard.GetChild(0).GetComponent<SpriteRenderer>().sprite = encounter.Icon;
         StartCoroutine(MoveCard(DisplayPos, false, false));
 
         CanClick = false;
@@ -111,7 +116,7 @@ public class EncounterStack : MonoBehaviour
         if (slam) {
             yield return new WaitForSeconds(.3f);
 
-            GameManager.instance.Amanager.PlayAudio("ForegroundHit");
+            GameManager.instance.Amanager.PlayAudio("CardSlam");
 
             var tmp = EndCardPos;
             StartCoroutine(MoveCard(tmp, false, true));
@@ -120,7 +125,7 @@ public class EncounterStack : MonoBehaviour
         if (end) {
             EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .2f);
 
-            CurrentCard.position = EndCardPos.position + new Vector3(0, pastEncounters.Count * .02f, 0);
+            CurrentCard.position = EndCardPos.position + new Vector3(0, pastEncounters.Count * .001f, 0);
             pastEncounters.Add(CurrentCard.gameObject);
 
             CurrentCard = Instantiate(CardPrefab).transform;
@@ -130,19 +135,23 @@ public class EncounterStack : MonoBehaviour
         }
     }
 
-    private void DisplayCards() {
+    private IEnumerator DisplayCards() {
         float middle = pastEncounters.Count / 2;
 
         for (int i = 0; i < pastEncounters.Count; i++) {
             StartCoroutine(DisplayCards(pastEncounters[i], DisplayPos.position + new Vector3((middle - i) * .5f, 0, 0), DisplayPos.rotation));
+
+            yield return new WaitForSeconds(.1f);
         }
 
         Displaying = true;
     }
 
-    private void ResetCards() {
+    private IEnumerator ResetCards() {
         for (int i = 0; i < pastEncounters.Count; i++) {
-            StartCoroutine(DisplayCards(pastEncounters[i], EndCardPos.position + new Vector3(0, i * .02f, 0), EndCardPos.rotation));
+            StartCoroutine(DisplayCards(pastEncounters[i], EndCardPos.position + new Vector3(0, i * .001f, 0), EndCardPos.rotation));
+
+            yield return new WaitForSeconds(.1f);
         }
 
         Displaying = false;

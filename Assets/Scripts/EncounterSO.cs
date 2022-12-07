@@ -6,6 +6,7 @@ using UnityEngine;
 public class EncounterSO : ScriptableObject
 {
     public new string name;
+    public Sprite Icon;
 
     public Color lightColor;
 

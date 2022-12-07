@@ -53,20 +53,24 @@ public class CameraPositionSet : MonoBehaviour
     }
 
     public void Ingame() {
-        if (Input.GetKeyDown(KeyCode.W)) {
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetAxisRaw("Mouse ScrollWheel") > 0) {
             if (CurrentPos == MainPos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
                 CurrentPos = CaravanPos;
             }
             else if (CurrentPos == CaravanPos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
                 CurrentPos = ResourcePos;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.S)) {
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetAxisRaw("Mouse ScrollWheel") < 0) {
             if (CurrentPos == CaravanPos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
                 CurrentPos = MainPos;
             }
             else if (CurrentPos == ResourcePos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
                 CurrentPos = CaravanPos;
             }
         }

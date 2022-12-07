@@ -8,7 +8,8 @@ public enum EventType {
     ON_ENCOUNTER_ENDED,
     DO_SCREENSHAKE,
     ON_GAME_STARTED,
-    ON_GAME_PAUSED
+    ON_GAME_PAUSED,
+    ON_GAME_UNPAUSED
 }
 
 public static class EventManager {

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: RockInTheRoad
   m_EditorClassIdentifier: 
   name: Rock Blocking the Road
+  Icon: {fileID: 21300000, guid: effb52b07ee3fa54dae5162aaa65b23b, type: 3}
   lightColor: {r: 0.7264151, g: 0.65431124, b: 0.46942863, a: 1}
   ObstaclePrefab: {fileID: 1231025492079827288, guid: 27b15a3d2ad64d84cae40da4cb715fa2, type: 3}
   SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}

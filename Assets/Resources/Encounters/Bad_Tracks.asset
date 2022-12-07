@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bad_Tracks
   m_EditorClassIdentifier: 
   name: Animal Tracks
+  Icon: {fileID: 21300000, guid: ea9fe4b52c031754c998e4830bcf1b22, type: 3}
   lightColor: {r: 0.84122324, g: 0.9811321, b: 0.31933072, a: 0}
   ObstaclePrefab: {fileID: 8818938584739417411, guid: e3804b37dda5a4d4893858a735932b35, type: 3}
   SurroundingPrefab: {fileID: 6388449673953122018, guid: f445a267610131646b29990133891a75, type: 3}
