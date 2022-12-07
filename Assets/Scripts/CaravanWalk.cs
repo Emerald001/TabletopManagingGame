@@ -212,6 +212,7 @@ public class CaravanWalk : MonoBehaviour
         SpawnObstacle(encounter.ObstaclePrefab);
 
         StartCoroutine(SlowDown(encounter));
+        StartCoroutine(CallEvent(encounter));
     }
 
     public IEnumerator SlowDown(EncounterSO encounter) {
@@ -222,6 +223,11 @@ public class CaravanWalk : MonoBehaviour
         }
 
         currentsSpeed = 0;
+    }
+
+    public IEnumerator CallEvent(EncounterSO encounter) {
+        yield return new WaitForSeconds(1f);
+
         EventManager<EncounterSO>.Invoke(EventType.ON_CARAVAN_STOPPED, encounter);
     }
 
