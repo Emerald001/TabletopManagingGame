@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EventType {
+    EMPTY,
     ON_ENCOUNTER_STARTED,
     ON_CARAVAN_STOPPED,
     ON_ENCOUNTER_ENDED,
     DO_SCREENSHAKE,
     ON_GAME_STARTED,
     ON_GAME_PAUSED,
-    ON_GAME_UNPAUSED
+    ON_GAME_UNPAUSED,
+    DESTROY_CARAVAN,
+    DESTROY_HUMAN
 }
 
 public static class EventManager {
@@ -29,7 +32,8 @@ public static class EventManager {
     }
 
     public static void Invoke(EventType eventType) {
-        eventActions[eventType]?.Invoke();
+        if (eventActions.ContainsKey(eventType))
+            eventActions[eventType]?.Invoke();
     }
 }
 

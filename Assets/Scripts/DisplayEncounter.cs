@@ -236,6 +236,7 @@ public class DisplayEncounter : MonoBehaviour {
         }
         Destroy(currentBackground);
 
+        EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_ENDED, currentEncounter);
         EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
     }
 
@@ -261,6 +262,8 @@ public class DisplayEncounter : MonoBehaviour {
 
     public IEnumerator RemoveOutcome(Option pickedOption) {
         GameManager.instance.Rmanager.AddResources(pickedOption);
+
+        EventManager.Invoke(pickedOption.EventToCall);
 
         while (transform.position.y != 3.68f) {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 3.68f, transform.position.z), 10 * Time.deltaTime);

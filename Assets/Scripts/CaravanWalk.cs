@@ -36,11 +36,13 @@ public class CaravanWalk : MonoBehaviour
 
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
-        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
+        EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
+        EventManager.Subscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
     }
     private void OnDisable() {
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
+        EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
+        EventManager.Unsubscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
     }
 
     void Start() {
@@ -58,7 +60,7 @@ public class CaravanWalk : MonoBehaviour
 
         var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
 
-        var dis = totalWidth / (CaravanPositions.Count);
+        var dis = totalWidth / (CaravanPositions.Count + 1);
 
         for (int i = 0; i < CaravanPositions.Count; i++) {
             CaravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
@@ -68,6 +70,14 @@ public class CaravanWalk : MonoBehaviour
     void Update() {
         timer = Mathf.InverseLerp(100f, 0, currentsSpeed) * timerModifier;
         timer = Mathf.Max(timer, .4f);
+
+        if (Input.GetKeyDown(KeyCode.End)) {
+            AddCaravan();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace)) {
+            RemoveCaravan();
+        }
 
         UpdateSurroundingsPositions();
         UpdateCaravanPositions();
@@ -143,7 +153,7 @@ public class CaravanWalk : MonoBehaviour
 
         var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
 
-        var dis = totalWidth / (CaravanPositions.Count);
+        var dis = totalWidth / (CaravanPositions.Count + 1);
 
         var tmpHorse = Instantiate(Horse);
         tmpHorse.transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y + .16f, transform.position.z);
@@ -160,18 +170,27 @@ public class CaravanWalk : MonoBehaviour
 
     //doesnt work yet
     public void RemoveCaravan() {
-        var tmp = CaravanPositions[0];
+        var tmp = CaravanPositions[^1];
 
         CaravanPositions.Remove(tmp);
 
         Destroy(tmp);
+
+        var Horse = Horses[^1];
+        var caravan = Caravans[^1];
+
+        Horses.Remove(Horse);
+        Caravans.Remove(caravan);
+
+        Surroundings.Add(Horse);
+        Surroundings.Add(caravan);
 
         var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
 
         var dis = totalWidth / (CaravanPositions.Count + 1);
 
         for (int i = 0; i < CaravanPositions.Count; i++) {
-            CaravanPositions[i].transform.position = new Vector3(dis * (i + 1) - totalWidth / 2, 0, 0);
+            CaravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
         }
     }
 
@@ -239,8 +258,13 @@ public class CaravanWalk : MonoBehaviour
         }
     }
 
-    public void Restart() {
+    public void Restart(EncounterSO encounter) {
         Surroundings.Remove(currentObstacle);
+
+        StopAllCoroutines();
+
+        StopCoroutine(SlowDown(encounter));
+
         StartCoroutine(SpeedUp());
         StartCoroutine(MoveSurrounding(currentObstacle.transform, 3, true, false));
     }

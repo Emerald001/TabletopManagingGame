@@ -16,10 +16,12 @@ public class HumanBehavior : MonoBehaviour {
 
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, AddedEncounter);
+        EventManager.Subscribe(EventType.DESTROY_HUMAN, RemoveMan);
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, RemovedEncounter);
     }
     private void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, AddedEncounter);
+        EventManager.Unsubscribe(EventType.DESTROY_HUMAN, RemoveMan);
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, RemovedEncounter);
     }
 
@@ -73,6 +75,16 @@ public class HumanBehavior : MonoBehaviour {
         dudes.Add(tmp);
     }
 
+    public void RemoveMan() {
+        if (dudes.Count < 1)
+            return;
+
+        var tmp = dudes[^1];
+
+        dudes.Remove(tmp);
+        Destroy(tmp);
+    }
+
     public IEnumerator WalkBack(GameObject dude, Vector3 targetPos) {
         dudes.Remove(dude);
         dude.GetComponent<Animator>().SetBool("Wobbling", true);
@@ -90,7 +102,12 @@ public class HumanBehavior : MonoBehaviour {
     }
 
     public void GatherAroundObstacle() {
-        var tmpPos = CaravanWalk.currentObstacle.transform.position + new Vector3(.4f, 0, 0);
+        var tmpPos = Vector3.zero;
+
+        if (CaravanWalk.currentObstacle.transform.position.y < 1.7f)
+            tmpPos = CaravanWalk.currentObstacle.transform.position + new Vector3(.4f, 0, 0);
+        else
+            return;
 
         for (int i = 0; i < dudes.Count; i++) {
             var dude = dudes[i];

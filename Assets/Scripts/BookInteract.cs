@@ -75,6 +75,8 @@ public class BookInteract : MonoBehaviour
     public void NextInfoBit(int dir) {
         allInfoBits[index].SetActive(false);
 
+        GameManager.instance.Amanager.PlayAudio("PageTurn");
+
         index += dir;
         if (index > allInfoBits.Count - 1)
             index = 0;

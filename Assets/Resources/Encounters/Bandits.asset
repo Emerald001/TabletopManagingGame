@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: Bandits
+  m_EditorClassIdentifier: 
+  name: Bandits
+  Icon: {fileID: 21300000, guid: 4dcffeb9a53d8734fbac06e7bcf0530f, type: 3}
+  lightColor: {r: 0, g: 0, b: 0, a: 0}
+  ObstaclePrefab: {fileID: 6211311385063347259, guid: 7f66c44dd8e55934c9b1e6e99289435f, type: 3}
+  SurroundingPrefab: {fileID: 978758315269923260, guid: 2c0284e4da45eb04fb4c689c40b2cb84, type: 3}
+  BackgroundPrefab: {fileID: 7208088278408372202, guid: 2de818a6baecd174d9b81e04a5d729bf, type: 3}
+  options:
+  - Name: Fight Back
+    Description: 
+    EventToCall: 0
+    WoodUse: 0
+    MeatUse: 0
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0

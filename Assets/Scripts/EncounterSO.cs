@@ -22,6 +22,8 @@ public struct Option {
     public string Name;
     public string Description;
 
+    public EventType EventToCall;
+
     [Header("Uses")]
     public int WoodUse;
     public int MeatUse;

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: CaravanBrokeDown
+  m_EditorClassIdentifier: 
+  name: Caravan Broke Down
+  Icon: {fileID: 21300000, guid: 97cbd769e7d8b8e4b8c3445cef95e00f, type: 3}
+  lightColor: {r: 1, g: 0.98549116, b: 0.5990566, a: 0}
+  ObstaclePrefab: {fileID: 9168054047016939006, guid: 3c9358cabdc86c042bb4ffd0e5d67b43, type: 3}
+  SurroundingPrefab: {fileID: 4939678284934504268, guid: 2357a6f173edc034b87060d12592f118, type: 3}
+  BackgroundPrefab: {fileID: 3729258429062638239, guid: 111338ad7914d7347a672a0dfe9de372, type: 3}
+  options:
+  - Name: Repair it
+    Description: You spent some time and a lot of resources repairing the cart. It
+      seems as good as new!
+    EventToCall: 0
+    WoodUse: 5
+    MeatUse: 2
+    GoldUse: 0
+    WaterUse: 5
+    Woodgive: 0
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
+  - Name: Leave It behind
+    Description: You decide to leave the caravan behind, scrapping it for parts
+    EventToCall: 8
+    WoodUse: 0
+    MeatUse: 0
+    GoldUse: 0
+    WaterUse: 0
+    Woodgive: 4
+    Meatgive: 0
+    Goldgive: 0
+    WaterGive: 0
