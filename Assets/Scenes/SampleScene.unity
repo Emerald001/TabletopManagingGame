@@ -568,7 +568,7 @@ MonoBehaviour:
   maxObstacleAmount: 50
   timerModifier: 2.1
   caravanWidth: 1
-  spawnChance: 100
+  spawnChance: 10
   slowdownModifier: 10
   Beginning: {fileID: 603796659}
   End: {fileID: 826121616}
@@ -10918,7 +10918,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 60778f9806cbbbb469ec129cafd59f57, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60778f9806cbbbb469ec129cafd59f57, type: 3}

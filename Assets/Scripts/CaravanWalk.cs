@@ -34,14 +34,16 @@ public class CaravanWalk : MonoBehaviour
     private readonly List<GameObject> CaravanPositions = new();
     [HideInInspector] public GameObject currentObstacle;
 
+    private bool EncounterActive;
+
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
-        EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
+        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Subscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
     }
     private void OnDisable() {
-        EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
+        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Unsubscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
     }
 
@@ -71,14 +73,6 @@ public class CaravanWalk : MonoBehaviour
         timer = Mathf.InverseLerp(100f, 0, currentsSpeed) * timerModifier;
         timer = Mathf.Max(timer, .4f);
 
-        if (Input.GetKeyDown(KeyCode.End)) {
-            AddCaravan();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Backspace)) {
-            RemoveCaravan();
-        }
-
         UpdateSurroundingsPositions();
         UpdateCaravanPositions();
     }
@@ -92,11 +86,11 @@ public class CaravanWalk : MonoBehaviour
             if (item.transform.position == new Vector3(End.transform.position.x, item.transform.position.y, item.transform.position.z)) {
                 Surroundings.RemoveAt(i);
 
-                StartCoroutine(MoveSurrounding(item.transform, transform.position.y + 2, true, false));
+                Destroy(item);
             }
         }
-
-        if (currentsSpeed < 1)
+        
+        if (currentsSpeed < 1 || EncounterActive)
             return;
 
         if (Surroundings.Count < maxObstacleAmount && Timer(ref treeTimer) <= 0)
@@ -228,13 +222,15 @@ public class CaravanWalk : MonoBehaviour
     }
 
     public void StartEncounter(EncounterSO encounter) {
+        EncounterActive = true;
+
         SpawnObstacle(encounter.ObstaclePrefab);
 
-        StartCoroutine(SlowDown(encounter));
+        StartCoroutine(SlowDown());
         StartCoroutine(CallEvent(encounter));
     }
 
-    public IEnumerator SlowDown(EncounterSO encounter) {
+    public IEnumerator SlowDown() {
         while (currentsSpeed > 1) {
             currentsSpeed -= slowdownModifier * Time.deltaTime;
 
@@ -258,14 +254,14 @@ public class CaravanWalk : MonoBehaviour
         }
     }
 
-    public void Restart(EncounterSO encounter) {
+    public void Restart() {
         Surroundings.Remove(currentObstacle);
 
         StopAllCoroutines();
 
-        StopCoroutine(SlowDown(encounter));
-
         StartCoroutine(SpeedUp());
         StartCoroutine(MoveSurrounding(currentObstacle.transform, 3, true, false));
+
+        EncounterActive = false;
     }
 }

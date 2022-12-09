@@ -54,6 +54,7 @@ public static class EventManager<T> {
     }
 
     public static void Invoke(EventType eventType, T obj) {
-        eventActions[eventType]?.Invoke(obj);
+        if(eventActions.ContainsKey(eventType))
+            eventActions[eventType]?.Invoke(obj);
     }
 }
