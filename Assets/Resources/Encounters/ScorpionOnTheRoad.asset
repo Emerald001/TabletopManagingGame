@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Scorpion on the road
   Icon: {fileID: 21300000, guid: d7e48d32e6926304b8733dd392ac18bf, type: 3}
+  catagory: 0
+  difficulty: 1
   lightColor: {r: 1, g: 0.6130317, b: 0.4669811, a: 1}
   ObstaclePrefab: {fileID: 6903261263800730523, guid: a2289791d2505a14fa5fc6a449605362, type: 3}
   SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
@@ -21,6 +23,7 @@ MonoBehaviour:
   options:
   - Name: KILL IT
     Description: You smash the scorpion with a stick... It dies.
+    EventToCall: 0
     WoodUse: 1
     MeatUse: 0
     GoldUse: 0
@@ -31,6 +34,7 @@ MonoBehaviour:
     WaterGive: 0
   - Name: RUN
     Description: You run like hell, it was really easy to avoid the scoprpion actually
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 1
     GoldUse: 0

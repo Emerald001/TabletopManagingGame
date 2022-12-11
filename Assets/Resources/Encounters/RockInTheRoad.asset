@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Rock Blocking the Road
   Icon: {fileID: 21300000, guid: effb52b07ee3fa54dae5162aaa65b23b, type: 3}
+  catagory: 0
+  difficulty: 1
   lightColor: {r: 0.7264151, g: 0.65431124, b: 0.46942863, a: 1}
   ObstaclePrefab: {fileID: 1231025492079827288, guid: 27b15a3d2ad64d84cae40da4cb715fa2, type: 3}
   SurroundingPrefab: {fileID: 4095684806482748054, guid: c55d03ff1d402db40a2d70e782231509, type: 3}
@@ -22,6 +24,7 @@ MonoBehaviour:
   - Name: Break the rock down
     Description: While mining the rock, your men came across a small gold vein. Enough
       to get some proper chunks.
+    EventToCall: 0
     WoodUse: 2
     MeatUse: 2
     GoldUse: 0
@@ -33,6 +36,7 @@ MonoBehaviour:
   - Name: Move the rock
     Description: Your men move the rock using some wood as levers, it is time consuming,
       but it does get moved eventually.
+    EventToCall: 0
     WoodUse: 3
     MeatUse: 2
     GoldUse: 0
@@ -44,6 +48,7 @@ MonoBehaviour:
   - Name: Find a Way around
     Description: Your men lead the caravan around the rock, finding some nice ripe
       berries on their way. As well as a nice calm river with fresh water.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 4
     GoldUse: 0

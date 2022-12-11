@@ -2,11 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EncounterCatagory { 
+    RESOURCE_GATHER,
+    RESOURCE_TAKE,
+
+}
+
+public enum Difficulty { 
+    GOOD,
+    NEUTRAL,
+    BAD
+}
+
 [CreateAssetMenu(menuName = "EncounterData")]
 public class EncounterSO : ScriptableObject
 {
     public new string name;
     public Sprite Icon;
+    public EncounterCatagory catagory;
+    public Difficulty difficulty;
 
     public Color lightColor;
 

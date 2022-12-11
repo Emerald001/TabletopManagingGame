@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: A Market selling Food
   Icon: {fileID: 21300000, guid: 683bfd7dde8c08341b21274c0000d488, type: 3}
+  catagory: 0
+  difficulty: 1
   lightColor: {r: 1, g: 0.6601781, b: 0, a: 1}
   ObstaclePrefab: {fileID: 7196132047402888154, guid: b205589705125514fbfb51bb05bbb10a, type: 3}
   SurroundingPrefab: {fileID: 978758315269923260, guid: 2c0284e4da45eb04fb4c689c40b2cb84, type: 3}
@@ -22,6 +24,7 @@ MonoBehaviour:
   - Name: Haggle for a better price
     Description: You haggle with the merchant for a better price, and you are succesful.
       Reluctantly the shopkeep gives you the food for less.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 3
@@ -32,6 +35,7 @@ MonoBehaviour:
     WaterGive: 0
   - Name: Buy for the set price
     Description: You buy the food for the five gold pieces. It smells delicious.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 5
@@ -43,6 +47,7 @@ MonoBehaviour:
   - Name: Buy bulk for a discount
     Description: You ask the merchant if you can buy some bulk. Hoping it will land
       you a discount, which it did!
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 8
@@ -54,6 +59,7 @@ MonoBehaviour:
   - Name: Continue your Quest
     Description: You continue without buying anything. But find a gold coin on your
       way out
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 0

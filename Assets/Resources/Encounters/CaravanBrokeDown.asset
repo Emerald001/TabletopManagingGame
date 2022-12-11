@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Caravan Broke Down
   Icon: {fileID: 21300000, guid: 97cbd769e7d8b8e4b8c3445cef95e00f, type: 3}
+  catagory: 0
+  difficulty: 1
   lightColor: {r: 1, g: 0.98549116, b: 0.5990566, a: 0}
   ObstaclePrefab: {fileID: 9168054047016939006, guid: 3c9358cabdc86c042bb4ffd0e5d67b43, type: 3}
   SurroundingPrefab: {fileID: 4939678284934504268, guid: 2357a6f173edc034b87060d12592f118, type: 3}

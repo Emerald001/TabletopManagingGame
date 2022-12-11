@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Linq;
 
 public class EncounterStack : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class EncounterStack : MonoBehaviour
     public GameObject PastStack;
 
     private List<EncounterSO> allEncounters;
+
+    private List<EncounterSO> GoodEncounters;
+    private List<EncounterSO> NeutralEncounters;
+    private List<EncounterSO> BadEncounters;
+
     private List<GameObject> pastEncounters = new();
 
     [HideInInspector] public Transform CurrentCard;
@@ -40,6 +46,10 @@ public class EncounterStack : MonoBehaviour
         CurrentCard.SetPositionAndRotation(CardPos.position, CardPos.rotation);
 
         var tmp = Resources.LoadAll<EncounterSO>("Encounters");
+
+        GoodEncounters = new(from item in tmp where item.difficulty == Difficulty.GOOD select item);
+        NeutralEncounters = new(from item in tmp where item.difficulty == Difficulty.NEUTRAL select item);
+        BadEncounters = new(from item in tmp where item.difficulty == Difficulty.BAD select item);
 
         allEncounters = new(tmp);
     }
