@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour {
     public List<Sound> soundslist = new List<Sound>();
@@ -13,6 +14,8 @@ public class AudioManager : MonoBehaviour {
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
+
+            s.source.outputAudioMixerGroup = s.mixerGroup;
 
             s.source.spatialBlend = s.spacialBlend;
         }
@@ -44,6 +47,7 @@ public class AudioManager : MonoBehaviour {
 public class Sound {
     public string name;
     public AudioClip clip;
+    public AudioMixerGroup mixerGroup;
     [HideInInspector] public AudioSource source;
 
     [Range(0, 1f)]
