@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CandleFlicker : MonoBehaviour
 {
-    public Light light;
+    public Light currentLight;
     public float StandardVal;
     public float offset;
 
@@ -15,6 +15,6 @@ public class CandleFlicker : MonoBehaviour
 
         var val = Mathf.PerlinNoise(noiseVal, 0) * 2 - 1;
 
-        light.intensity = StandardVal + val;
+        currentLight.intensity = StandardVal + val;
     }
 }

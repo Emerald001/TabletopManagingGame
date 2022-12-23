@@ -1366,7 +1366,7 @@ RectTransform:
   - {fileID: 843544676}
   - {fileID: 429195656}
   m_Father: {fileID: 1091443156}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4656,7 +4656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0406c4b93b6a96247a566032d1c03354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 1275861636}
+  currentLight: {fileID: 1275861636}
   StandardVal: 1.2
   offset: 0.4
 --- !u!1 &759948248
@@ -4800,6 +4800,42 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &796798191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 796798192}
+  m_Layer: 5
+  m_Name: HiddenPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &796798192
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796798191}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1091443156}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 1500}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &826121615
@@ -5906,7 +5942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0406c4b93b6a96247a566032d1c03354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 1417135542}
+  currentLight: {fileID: 1417135542}
   StandardVal: 1.7
   offset: 0.8
 --- !u!1 &990612912
@@ -6484,7 +6520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0406c4b93b6a96247a566032d1c03354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 4861463}
+  currentLight: {fileID: 4861463}
   StandardVal: 1
   offset: 0.4
 --- !u!1001 &1074698101
@@ -6660,6 +6696,7 @@ RectTransform:
   m_Children:
   - {fileID: 1857380608}
   - {fileID: 82658711}
+  - {fileID: 796798192}
   - {fileID: 84313686}
   m_Father: {fileID: 1606957851}
   m_RootOrder: 0
@@ -12506,7 +12543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0406c4b93b6a96247a566032d1c03354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 1840279428}
+  currentLight: {fileID: 1840279428}
   StandardVal: 1.2
   offset: 0.5
 --- !u!1001 &2037180646

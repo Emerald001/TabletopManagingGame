@@ -18,24 +18,41 @@ public class SettingsMenu : MonoBehaviour {
     public GameObject Check;
     public bool isFullscreen = false;
 
+    private ActionManager actionManager;
+    private bool CanInvoke = true;
+
+    private void Start() {
+        actionManager = new(OnEmptyQueue);
+    }
+
+    private void Update() {
+        actionManager.OnUpdate();
+    }
+
     public void ToggleSettingsMenu() {
+        if (!CanInvoke)
+            return;
+
+        CanInvoke = false;
         CurrentlyActive = !CurrentlyActive;
 
         if (CurrentlyActive) {
-            MainMenuToggle.transform.position = MainSidePos.position;
-            SettingsToggle.transform.position = SettingStandardPos.position;
+            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainSidePos));
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos));
         }
         else {
-            MainMenuToggle.transform.position = MainStandardPos.position;
-            SettingsToggle.transform.position = SettingHiddenPos.position;
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
+            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainStandardPos));
         }
-
-        SettingsToggle.SetActive(CurrentlyActive);
     }
 
     public void ToggleFullscreen() {
         isFullscreen = !isFullscreen;
 
         Check.SetActive(isFullscreen);
+    }
+
+    public void OnEmptyQueue() {
+        CanInvoke = true;
     }
 }

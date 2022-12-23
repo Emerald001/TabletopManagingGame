@@ -7,9 +7,17 @@ public class ActionManager
     public Queue<Action> CurrentQueue = new();
     public Action CurrentAction;
 
+    private System.Action OnEmptyQueue;
+
+    public ActionManager(System.Action OnEmptyQueue) {
+        this.OnEmptyQueue = OnEmptyQueue;
+    }
+
     public void OnUpdate() {
-        if (CurrentAction == null)
+        if (CurrentAction == null) {
+            NextAction();
             return;
+        }
 
         CurrentAction.OnUpdate();
 
@@ -21,17 +29,17 @@ public class ActionManager
         if (CurrentAction != null)
             CurrentAction.OnExit();
 
-        if(CurrentQueue.Count > 0) {
+        if (CurrentQueue.Count > 0) {
             CurrentAction = CurrentQueue.Dequeue();
             CurrentAction.OnEnter();
         }
         else {
             CurrentAction = null;
-            Debug.Log("Last Action in Queue");
+            OnEmptyQueue.Invoke();
         }
     }
 
-    private void Enqueue(Action action) {
+    public void Enqueue(Action action) {
         CurrentQueue.Enqueue(action);
     }
 }
