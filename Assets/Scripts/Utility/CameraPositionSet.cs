@@ -8,6 +8,7 @@ public class CameraPositionSet : MonoBehaviour
     public Transform CaravanPos;
     public Transform ResourcePos;
     public Transform MainMenuPos;
+    public Transform QuestPos;
     public Vector3 CardRot;
 
     public float cameraMoveSpeed;
@@ -72,6 +73,19 @@ public class CameraPositionSet : MonoBehaviour
             else if (CurrentPos == ResourcePos) {
                 GameManager.instance.Amanager.PlayAudio("QuickTransition");
                 CurrentPos = CaravanPos;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.A)) {
+            if (CurrentPos == CaravanPos || CurrentPos == MainPos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
+                CurrentPos = QuestPos;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.D)) {
+            if (CurrentPos == QuestPos) {
+                GameManager.instance.Amanager.PlayAudio("QuickTransition");
+                CurrentPos = MainPos;
             }
         }
     }
