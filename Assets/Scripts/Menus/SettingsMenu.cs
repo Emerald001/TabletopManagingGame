@@ -37,12 +37,12 @@ public class SettingsMenu : MonoBehaviour {
         CurrentlyActive = !CurrentlyActive;
 
         if (CurrentlyActive) {
-            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainSidePos));
-            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos));
+            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainSidePos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos, "", 0));
         }
         else {
-            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
-            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainStandardPos));
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainStandardPos, "", 0));
         }
     }
 

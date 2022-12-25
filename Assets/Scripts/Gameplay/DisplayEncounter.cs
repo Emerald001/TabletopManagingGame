@@ -4,24 +4,35 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DisplayEncounter : MonoBehaviour {
+    [Header("Refences")]
     public Canvas encounterCanvas;
     public Canvas outcomeCanvas;
     public Button buttonPrefab;
 
+    public Transform BackgroundStandardPos;
+    public Transform ForegroundStandardPos;
+    public Transform CanvasStandardPos;
+
+    public EncounterSO tmpEncounter;
+
     public Color standardCandleColors;
     public List<Light> candleLights;
 
-    public GameObject currentBackground;
-    public GameObject currentSurrouning;
+    [HideInInspector] public GameObject currentBackground;
+    [HideInInspector] public GameObject currentSurrouning;
 
-    public List<GameObject> buttons;
-    public int index;
+    [HideInInspector] public List<GameObject> buttons;
+    [HideInInspector] public int index;
 
-    public bool tmpboolWaiting = false;
-    public Option tmpCurrentPickedOption;
+    [HideInInspector] public bool tmpboolWaiting = false;
+    [HideInInspector] public Option tmpCurrentPickedOption;
     
     private EncounterSO currentEncounter;
     private ActionManager actionQueue;
+
+    private void Start() {
+        actionQueue = new(EndFunc);
+    }
 
     public void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
@@ -32,12 +43,18 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void Update() {
+        actionQueue.OnUpdate();
+
         if (Input.GetKeyDown(KeyCode.Mouse0) && tmpboolWaiting) {
             tmpboolWaiting = false;
 
             StartCoroutine(RemoveOutcome(tmpCurrentPickedOption));
 
             tmpCurrentPickedOption = new Option();
+        }
+
+        if (Input.GetKeyDown(KeyCode.U)) {
+            SetQueue(tmpEncounter);
         }
     }
 
@@ -109,6 +126,18 @@ public class DisplayEncounter : MonoBehaviour {
         currentEncounter = encounter;
 
         StartCoroutine(SpawnBackground(encounter));
+    }
+
+    public void SetQueue(EncounterSO encounter) {
+        actionQueue.Enqueue(new MoveObjectAction(Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity), 50, BackgroundStandardPos, "BackgroundHit", .4f));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity), 25, ForegroundStandardPos, "ForegroundHit", .2f));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, ForegroundStandardPos, "PaperRoll", 0));
+    }
+     
+    public void EndFunc() {
+
     }
 
     public IEnumerator SetColor(Light light, Color color) {
