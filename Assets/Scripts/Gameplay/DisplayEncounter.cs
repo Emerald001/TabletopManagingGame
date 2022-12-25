@@ -21,6 +21,7 @@ public class DisplayEncounter : MonoBehaviour {
     public Option tmpCurrentPickedOption;
     
     private EncounterSO currentEncounter;
+    private ActionManager actionQueue;
 
     public void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
