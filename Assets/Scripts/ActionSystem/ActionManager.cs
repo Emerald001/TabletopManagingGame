@@ -15,7 +15,8 @@ public class ActionManager
 
     public void OnUpdate() {
         if (CurrentAction == null) {
-            NextAction();
+            if (CurrentQueue.Count > 0)
+                NextAction();
             return;
         }
 
@@ -32,6 +33,9 @@ public class ActionManager
         if (CurrentQueue.Count > 0) {
             CurrentAction = CurrentQueue.Dequeue();
             CurrentAction.OnEnter();
+
+            if (CurrentAction.IsDone)
+                NextAction();
         }
         else {
             CurrentAction = null;

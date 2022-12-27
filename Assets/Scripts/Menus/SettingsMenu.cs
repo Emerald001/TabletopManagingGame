@@ -8,6 +8,7 @@ public class SettingsMenu : MonoBehaviour {
     public GameObject MainMenuToggle;
 
     public Transform MainStandardPos;
+    public Transform MainHiddenPos;
     public Transform MainSidePos;
     public Transform SettingHiddenPos;
     public Transform SettingStandardPos;
@@ -20,6 +21,13 @@ public class SettingsMenu : MonoBehaviour {
 
     private ActionManager actionManager;
     private bool CanInvoke = true;
+
+    private void OnEnable() {
+        EventManager.Subscribe(EventType.ON_GAME_STARTED, HideMenu);
+    }
+    private void OnDisable() {
+        EventManager.Unsubscribe(EventType.ON_GAME_STARTED, HideMenu);
+    }
 
     private void Start() {
         actionManager = new(OnEmptyQueue);
@@ -54,5 +62,10 @@ public class SettingsMenu : MonoBehaviour {
 
     public void OnEmptyQueue() {
         CanInvoke = true;
+    }
+
+    public void HideMenu() {
+        actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos, "", 0));
+        actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainHiddenPos, "", 0));
     }
 }

@@ -9,11 +9,12 @@ public class DisplayEncounter : MonoBehaviour {
     public Canvas outcomeCanvas;
     public Button buttonPrefab;
 
-    public Transform BackgroundStandardPos;
-    public Transform ForegroundStandardPos;
-    public Transform CanvasStandardPos;
-
-    public EncounterSO tmpEncounter;
+    public Transform BackgroundStandardTransform;
+    public Transform BackgroundUpperTransform;
+    public Transform ForegroundStandardTransform;
+    public Transform ForegroundUpperTransform;
+    public Transform CanvasStandardTransform;
+    public Transform CanvasUpperTransform;
 
     public Color standardCandleColors;
     public List<Light> candleLights;
@@ -25,8 +26,7 @@ public class DisplayEncounter : MonoBehaviour {
     [HideInInspector] public int index;
 
     [HideInInspector] public bool tmpboolWaiting = false;
-    [HideInInspector] public Option tmpCurrentPickedOption;
-    
+
     private EncounterSO currentEncounter;
     private ActionManager actionQueue;
 
@@ -35,11 +35,11 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void OnEnable() {
-        EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
+        EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetQueue);
     }
 
     public void OnDisable() {
-        EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, SetOrder);
+        EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, SetQueue);
     }
 
     public void Update() {
@@ -48,13 +48,7 @@ public class DisplayEncounter : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Mouse0) && tmpboolWaiting) {
             tmpboolWaiting = false;
 
-            StartCoroutine(RemoveOutcome(tmpCurrentPickedOption));
-
-            tmpCurrentPickedOption = new Option();
-        }
-
-        if (Input.GetKeyDown(KeyCode.U)) {
-            SetQueue(tmpEncounter);
+            EventManager.Invoke(EventType.NEXT_ACTION);
         }
     }
 
@@ -62,6 +56,8 @@ public class DisplayEncounter : MonoBehaviour {
         encounterCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.name;
     }
     public void DisplayOutcome(Option ID) {
+        Debug.Log(ID.Name);
+
         outcomeCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Name;
         outcomeCanvas.transform.GetChild(3).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Description;
     }
@@ -115,36 +111,62 @@ public class DisplayEncounter : MonoBehaviour {
             item.GetComponent<Button>().interactable = false;
         }
 
-        StartCoroutine(RollEncounter(currentEncounter.options[ID]));
         GameManager.instance.Rmanager.RemoveResources(currentEncounter.options[ID]);
-
-        tmpCurrentPickedOption = currentEncounter.options[ID];
-    }
-
-    public void SetOrder(EncounterSO encounter) {
-        index = 0;
-        currentEncounter = encounter;
-
-        StartCoroutine(SpawnBackground(encounter));
+        PartTwo(currentEncounter.options[ID]);
+        EventManager.Invoke(EventType.NEXT_ACTION);
     }
 
     public void SetQueue(EncounterSO encounter) {
-        actionQueue.Enqueue(new MoveObjectAction(Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity), 50, BackgroundStandardPos, "BackgroundHit", .4f));
+        index = 0;
+        currentEncounter = encounter;
+        encounterCanvas.transform.position = CanvasUpperTransform.position;
+        outcomeCanvas.transform.position = CanvasUpperTransform.position;
+
+        currentBackground = Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity);
+        currentSurrouning = Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity);
+
+        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundStandardTransform, "BackgroundHit", .4f));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity), 25, ForegroundStandardPos, "ForegroundHit", .2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform, "ForegroundHit", .2f));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, ForegroundStandardPos, "PaperRoll", 0));
+        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
+        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
     }
-     
+
+    public void PartTwo(Option PickedOption) {
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new DoMethodAction(RemoveOptions));
+        actionQueue.Enqueue(new DoMethodAction(() => { tmpboolWaiting = true; }));
+        actionQueue.Enqueue(new DoMethodAction<Option>(DisplayOutcome, PickedOption));
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
+        actionQueue.Enqueue(new DoMethodAction<Option>(GameManager.instance.Rmanager.AddResources, PickedOption));
+        actionQueue.Enqueue(new DoMethodAction(() => { EventManager.Invoke(PickedOption.EventToCall); }));
+        actionQueue.Enqueue(new DoMethodAction(PartThree));
+    }
+
+    public void PartThree() {
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new DestoyObjectAction(currentSurrouning));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new DestoyObjectAction(currentBackground));
+        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, standardCandleColors));
+    }
+
     public void EndFunc() {
-
+        EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_ENDED, currentEncounter);
+        EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
     }
 
-    public IEnumerator SetColor(Light light, Color color) {
-        while (light.color != color) {
-            light.color = color;
-
-            yield return new WaitForEndOfFrame();
+    public void SetColor(Color color) {
+        foreach (var item in candleLights) {
+            item.color = color;
         }
     }
 
@@ -164,9 +186,7 @@ public class DisplayEncounter : MonoBehaviour {
                 break;
         }
 
-        foreach (var item in candleLights) {
-            StartCoroutine(SetColor(item, encounter.lightColor));
-        }
+        SetColor(encounter.lightColor);
 
         EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .4f);
 
@@ -261,9 +281,8 @@ public class DisplayEncounter : MonoBehaviour {
                 break;
         }
 
-        foreach (var item in candleLights) {
-            StartCoroutine(SetColor(item, standardCandleColors));
-        }
+        SetColor(standardCandleColors);
+
         Destroy(currentBackground);
 
         EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_ENDED, currentEncounter);

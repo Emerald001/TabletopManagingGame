@@ -12,7 +12,8 @@ public enum EventType {
     ON_GAME_PAUSED,
     ON_GAME_UNPAUSED,
     DESTROY_CARAVAN,
-    DESTROY_HUMAN
+    DESTROY_HUMAN,
+    NEXT_ACTION
 }
 
 public static class EventManager {

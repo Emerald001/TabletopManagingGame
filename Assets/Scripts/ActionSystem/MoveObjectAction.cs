@@ -18,6 +18,8 @@ public class MoveObjectAction : Action {
     private float ScreenShakeAmount;
 
     public override void OnEnter() {
+        ObjectToMove.SetActive(true);
+
         GameManager.instance.Amanager.PlayAudio(AudioName);
     }
 
