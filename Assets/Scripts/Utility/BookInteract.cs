@@ -25,9 +25,13 @@ public class BookInteract : MonoBehaviour
 
     private void OnEnable() {
         EventManager<bool>.Subscribe(EventType.ON_GAME_STARTED, SetInteractable);
+        EventManager<bool>.Subscribe(EventType.ON_GAME_PAUSED, SetInteractable);
+        EventManager<bool>.Subscribe(EventType.ON_GAME_UNPAUSED, SetInteractable);
     }
     private void OnDisable() {
         EventManager<bool>.Unsubscribe(EventType.ON_GAME_STARTED, SetInteractable);
+        EventManager<bool>.Unsubscribe(EventType.ON_GAME_PAUSED, SetInteractable);
+        EventManager<bool>.Unsubscribe(EventType.ON_GAME_UNPAUSED, SetInteractable);
     }
 
     private void Start() {

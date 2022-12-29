@@ -52,12 +52,53 @@ public class DisplayEncounter : MonoBehaviour {
         }
     }
 
+    public void SetQueue(EncounterSO encounter) {
+        index = 0;
+        currentEncounter = encounter;
+        encounterCanvas.transform.position = CanvasUpperTransform.position;
+        outcomeCanvas.transform.position = CanvasUpperTransform.position;
+
+        currentBackground = Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity);
+        currentSurrouning = Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity);
+
+        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundStandardTransform, "BackgroundHit", .4f));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform, "ForegroundHit", .2f));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
+        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
+    }
+
+    public void PartTwo(Option PickedOption) {
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new DoMethodAction(RemoveOptions));
+        actionQueue.Enqueue(new DoMethodAction<Option>(DisplayOutcome, PickedOption));
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new DoMethodAction(() => { tmpboolWaiting = true; }));
+        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
+        actionQueue.Enqueue(new DoMethodAction<Option>(GameManager.instance.Rmanager.AddResources, PickedOption));
+        actionQueue.Enqueue(new DoMethodAction(() => { EventManager.Invoke(PickedOption.EventToCall); }));
+        actionQueue.Enqueue(new DoMethodAction(PartThree));
+    }
+
+    public void PartThree() {
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new DestoyObjectAction(currentSurrouning));
+        actionQueue.Enqueue(new WaitAction(.2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new DestoyObjectAction(currentBackground));
+        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, standardCandleColors));
+    }
+
     public void DisplayTitle(EncounterSO encounter) {
         encounterCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.name;
     }
     public void DisplayOutcome(Option ID) {
-        Debug.Log(ID.Name);
-
         outcomeCanvas.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Name;
         outcomeCanvas.transform.GetChild(3).GetComponent<TMPro.TextMeshProUGUI>().text = ID.Description;
     }
@@ -91,6 +132,16 @@ public class DisplayEncounter : MonoBehaviour {
 
             buttons.Add(tmp.gameObject);
         }
+
+        bool check = true;
+        foreach (var item in buttons) {
+            if (item.GetComponent<Button>().interactable == true)
+                check = false;
+        }
+
+        if (check) {
+            EventManager.Invoke(EventType.DO_GAME_OVER);
+        }
     }
 
     public void RemoveOptions() {
@@ -116,49 +167,6 @@ public class DisplayEncounter : MonoBehaviour {
         EventManager.Invoke(EventType.NEXT_ACTION);
     }
 
-    public void SetQueue(EncounterSO encounter) {
-        index = 0;
-        currentEncounter = encounter;
-        encounterCanvas.transform.position = CanvasUpperTransform.position;
-        outcomeCanvas.transform.position = CanvasUpperTransform.position;
-
-        currentBackground = Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity);
-        currentSurrouning = Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity);
-
-        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
-        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundStandardTransform, "BackgroundHit", .4f));
-        actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform, "ForegroundHit", .2f));
-        actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
-        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
-        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
-    }
-
-    public void PartTwo(Option PickedOption) {
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
-        actionQueue.Enqueue(new DoMethodAction(RemoveOptions));
-        actionQueue.Enqueue(new DoMethodAction(() => { tmpboolWaiting = true; }));
-        actionQueue.Enqueue(new DoMethodAction<Option>(DisplayOutcome, PickedOption));
-        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
-        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
-        actionQueue.Enqueue(new DoMethodAction<Option>(GameManager.instance.Rmanager.AddResources, PickedOption));
-        actionQueue.Enqueue(new DoMethodAction(() => { EventManager.Invoke(PickedOption.EventToCall); }));
-        actionQueue.Enqueue(new DoMethodAction(PartThree));
-    }
-
-    public void PartThree() {
-        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
-        actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundUpperTransform, "", 0));
-        actionQueue.Enqueue(new DestoyObjectAction(currentSurrouning));
-        actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundUpperTransform, "", 0));
-        actionQueue.Enqueue(new DestoyObjectAction(currentBackground));
-        actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, standardCandleColors));
-    }
-
     public void EndFunc() {
         EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_ENDED, currentEncounter);
         EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
@@ -168,165 +176,5 @@ public class DisplayEncounter : MonoBehaviour {
         foreach (var item in candleLights) {
             item.color = color;
         }
-    }
-
-    public IEnumerator SpawnBackground(EncounterSO encounter) {
-        var tmp = Instantiate(encounter.BackgroundPrefab).transform;
-        currentBackground = tmp.gameObject;
-        tmp.position = new Vector3(0, 10, 0);
-
-        GameManager.instance.Amanager.PlayAudio("BackgroundHit");
-
-        while (tmp.position.y != 0) {
-            tmp.position = Vector3.MoveTowards(tmp.position, new Vector3(tmp.position.x, 0, tmp.position.z), 50 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (tmp.position.y == 0)
-                break;
-        }
-
-        SetColor(encounter.lightColor);
-
-        EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .4f);
-
-        yield return new WaitForSeconds(.2f);
-
-        StartCoroutine(SpawnSurrounding(encounter));
-    }
-
-    public IEnumerator SpawnSurrounding(EncounterSO encounter) {
-        var tmp = Instantiate(encounter.SurroundingPrefab).transform;
-        currentSurrouning = tmp.gameObject;
-        tmp.position = new Vector3(0, 4, .5f);
-
-        GameManager.instance.Amanager.PlayAudio("ForegroundHit");
-
-        while (tmp.position.y != 1.6) {
-            tmp.position = Vector3.MoveTowards(tmp.position, new Vector3(tmp.position.x, 1.6f, tmp.position.z), 25 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (tmp.position.y == 1.6f)
-                break;
-        }
-
-        EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .12f);
-
-        yield return new WaitForSeconds(.2f);
-
-        StartCoroutine(UnrollEncounter(encounter));
-    }
-
-    public IEnumerator UnrollEncounter(EncounterSO encounter) {
-        transform.position += new Vector3(0, 2, 0);
-        encounterCanvas.gameObject.SetActive(true);
-
-        DisplayOptions(encounter);
-        DisplayTitle(encounter);
-
-        GameManager.instance.Amanager.PlayAudio("PaperRoll");
-
-        while (transform.position.y != 1.68) {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 1.68f, transform.position.z), 10 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (transform.position.y == 1.68f)
-                break;
-        }
-    }
-
-    public IEnumerator RollEncounter(Option pickedOption) {
-        while (transform.position.y != 3.68f) {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 3.68f, transform.position.z), 10 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (transform.position.y == 3.68f)
-                break;
-        }
-
-        encounterCanvas.gameObject.SetActive(false);
-
-        RemoveOptions();
-        yield return new WaitForSeconds(.2f);
-
-        StartCoroutine(ShowOutcome(pickedOption));
-    }
-
-    public IEnumerator RemoveSurrounding() {
-        while (currentSurrouning.transform.position.y != 3.6) {
-            currentSurrouning.transform.position = Vector3.MoveTowards(currentSurrouning.transform.position, new Vector3(currentSurrouning.transform.position.x, 3.6f, currentSurrouning.transform.position.z), 25 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (currentSurrouning.transform.position.y == 3.6f)
-                break;
-        }
-
-        Destroy(currentSurrouning);
-        yield return new WaitForSeconds(.2f);
-
-        StartCoroutine(RemoveBackground());
-    }
-
-    public IEnumerator RemoveBackground() {
-        while (currentBackground.transform.position.y != 10) {
-            currentBackground.transform.position = Vector3.MoveTowards(currentBackground.transform.position, new Vector3(currentBackground.transform.position.x, 10, currentBackground.transform.position.z), 50 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (currentBackground.transform.position.y == 10)
-                break;
-        }
-
-        SetColor(standardCandleColors);
-
-        Destroy(currentBackground);
-
-        EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_ENDED, currentEncounter);
-        EventManager.Invoke(EventType.ON_ENCOUNTER_ENDED);
-    }
-
-    public IEnumerator ShowOutcome(Option pickedOption) {
-        transform.position += new Vector3(0, 2, 0);
-        outcomeCanvas.gameObject.SetActive(true);
-
-        DisplayOutcome(pickedOption);
-
-        GameManager.instance.Amanager.PlayAudio("PaperRoll");
-
-        while (transform.position.y != 1.68) {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 1.68f, transform.position.z), 10 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (transform.position.y == 1.68f)
-                break;
-        }
-
-        tmpboolWaiting = true;
-    }
-
-    public IEnumerator RemoveOutcome(Option pickedOption) {
-        GameManager.instance.Rmanager.AddResources(pickedOption);
-
-        EventManager.Invoke(pickedOption.EventToCall);
-
-        while (transform.position.y != 3.68f) {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 3.68f, transform.position.z), 10 * Time.deltaTime);
-
-            yield return new WaitForEndOfFrame();
-
-            if (transform.position.y == 3.68f)
-                break;
-        }
-
-        outcomeCanvas.gameObject.SetActive(false);
-
-        yield return new WaitForSeconds(.2f);
-
-        StartCoroutine(RemoveSurrounding());
     }
 }

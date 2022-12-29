@@ -4,16 +4,17 @@ using UnityEngine;
 
 public enum EventType {
     EMPTY,
+    ON_GAME_STARTED,
+    ON_GAME_PAUSED,
+    ON_GAME_UNPAUSED,
     ON_ENCOUNTER_STARTED,
     ON_CARAVAN_STOPPED,
     ON_ENCOUNTER_ENDED,
     DO_SCREENSHAKE,
-    ON_GAME_STARTED,
-    ON_GAME_PAUSED,
-    ON_GAME_UNPAUSED,
     DESTROY_CARAVAN,
     DESTROY_HUMAN,
-    NEXT_ACTION
+    NEXT_ACTION,
+    DO_GAME_OVER
 }
 
 public static class EventManager {

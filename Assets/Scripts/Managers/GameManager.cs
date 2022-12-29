@@ -22,12 +22,16 @@ public class GameManager : MonoBehaviour
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
         EventManager.Subscribe(EventType.ON_GAME_STARTED, Init);
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
+
+        EventManager.Subscribe(EventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
     }
 
     private void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
         EventManager.Unsubscribe(EventType.ON_GAME_STARTED, Init);
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
+
+        EventManager.Unsubscribe(EventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
     }
 
     void Start() {

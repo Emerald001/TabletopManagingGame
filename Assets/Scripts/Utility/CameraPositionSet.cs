@@ -20,9 +20,13 @@ public class CameraPositionSet : MonoBehaviour
 
     private void OnEnable() {
         EventManager.Subscribe(EventType.ON_GAME_STARTED, SetInGame);
+        EventManager.Subscribe(EventType.ON_GAME_PAUSED, MainMenu);
+        EventManager.Subscribe(EventType.ON_GAME_UNPAUSED, SetInGame);
     }
     private void OnDisable() {
         EventManager.Unsubscribe(EventType.ON_GAME_STARTED, SetInGame);
+        EventManager.Unsubscribe(EventType.ON_GAME_PAUSED, MainMenu);
+        EventManager.Unsubscribe(EventType.ON_GAME_UNPAUSED, SetInGame);
     }
 
     private void Start() {

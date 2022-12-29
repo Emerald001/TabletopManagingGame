@@ -22,8 +22,6 @@ public class WaitForCallAction : Action {
     }
 
     public void Listening() {
-        Debug.Log("Called Event");
-
         IsDone = true;
     }
 }
