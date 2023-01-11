@@ -162,7 +162,6 @@ public class CaravanWalk : MonoBehaviour
         }
     }
 
-    //doesnt work yet
     public void RemoveCaravan() {
         var tmp = CaravanPositions[^1];
 

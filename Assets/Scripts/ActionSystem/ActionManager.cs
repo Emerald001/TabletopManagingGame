@@ -7,8 +7,8 @@ public class ActionManager
     public Queue<Action> CurrentQueue = new();
     public Action CurrentAction;
 
-    private System.Action OnEmptyQueue;
-
+    private readonly System.Action OnEmptyQueue;
+    
     public ActionManager(System.Action OnEmptyQueue) {
         this.OnEmptyQueue = OnEmptyQueue;
     }
@@ -45,5 +45,17 @@ public class ActionManager
 
     public void Enqueue(Action action) {
         CurrentQueue.Enqueue(action);
+    }
+
+    public void Inject(int index, Action action) {
+        List<Action> tmp = new(CurrentQueue);
+
+        tmp.Insert(index, action);
+
+        CurrentQueue = new(tmp);
+    }
+
+    public void Clear() {
+        CurrentQueue.Clear();
     }
 }
