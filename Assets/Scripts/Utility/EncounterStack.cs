@@ -34,7 +34,7 @@ public class EncounterStack : MonoBehaviour
 
     private void OnEnable() {
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
-        EventManager<EncounterSO>.Subscribe(EventType.ON_GAME_STARTED, StartEncounter);
+        //EventManager<EncounterSO>.Subscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
     private void OnDisable() {
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
