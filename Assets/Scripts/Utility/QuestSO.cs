@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "QuestData")]
 public class QuestSO : ScriptableObject
 {
-    public new string name;
     public Sprite Icon;
+    public new string name;
+    public string discription;
 
     public Difficulty difficulty;
-    public string discription;
 }
