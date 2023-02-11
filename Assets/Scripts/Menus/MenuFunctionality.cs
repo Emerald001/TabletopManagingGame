@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MenuFunctionality : MonoBehaviour
 {
-    [Header("Toggle SettingsMenu")]
+    [Header("Toggle Menus")]
     public EncounterSO StartEncounter;
     public GameObject SettingsToggle;
     public GameObject MainMenuToggle;
@@ -41,7 +41,7 @@ public class MenuFunctionality : MonoBehaviour
     private void Update() {
         actionManager.OnUpdate();
 
-        if (Input.GetKeyDown(KeyCode.P)) {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             TogglePauseMenu();
         } 
     }

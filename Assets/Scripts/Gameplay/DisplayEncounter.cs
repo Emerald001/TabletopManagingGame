@@ -37,7 +37,6 @@ public class DisplayEncounter : MonoBehaviour {
     public void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_CARAVAN_STOPPED, SetQueue);
     }
-
     public void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_CARAVAN_STOPPED, SetQueue);
     }
