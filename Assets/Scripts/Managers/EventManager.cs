@@ -14,7 +14,8 @@ public enum EventType {
     DESTROY_CARAVAN,
     DESTROY_HUMAN,
     NEXT_ACTION,
-    DO_GAME_OVER
+    DO_GAME_OVER,
+    SET_AREA
 }
 
 public static class EventManager {

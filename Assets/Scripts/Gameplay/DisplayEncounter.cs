@@ -103,6 +103,9 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void DisplayOptions(EncounterSO encounter) {
+        if (encounter.options.Count < 1)
+            return;
+
         for (int i = 0; i < encounter.options.Count; i++) {
             var tmp = Instantiate(buttonPrefab, encounterCanvas.transform);
             tmp.name = "Button " + i.ToString();
@@ -145,12 +148,10 @@ public class DisplayEncounter : MonoBehaviour {
 
     public void RemoveOptions() {
         for (int i = 0; i < buttons.Count; i++) {
-            var tmp = buttons[i];
-
-            var tmpButton = tmp.GetComponent<Button>();
+            var tmpButton = buttons[i].GetComponent<Button>();
             tmpButton.onClick.RemoveAllListeners();
 
-            Destroy(tmp);
+            Destroy(buttons[i]);
         }
 
         buttons.Clear();
