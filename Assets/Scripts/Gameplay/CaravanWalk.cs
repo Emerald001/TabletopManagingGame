@@ -43,11 +43,13 @@ public class CaravanWalk : MonoBehaviour {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Subscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
+        EventManager<AreaSO>.Subscribe(EventType.SET_AREA, SetArea);
     }
     private void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Unsubscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
+        EventManager<AreaSO>.Unsubscribe(EventType.SET_AREA, SetArea);
     }
 
     void Start() {

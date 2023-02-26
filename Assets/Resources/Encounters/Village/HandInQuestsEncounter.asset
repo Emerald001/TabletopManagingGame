@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74a2408609a2124e99ed9c97567174e, type: 3}
+  m_Name: HandInQuestsEncounter
+  m_EditorClassIdentifier: 
+  name: HandInQuests
+  Icon: {fileID: 21300000, guid: 5e7a1135e1165b6458ffcb3e96ea126b, type: 3}
+  catagory: 0
+  difficulty: 0
+  lightColor: {r: 1, g: 0.99938184, b: 0.75, a: 1}
+  ObstaclePrefab: {fileID: 0}
+  SurroundingPrefab: {fileID: 0}
+  BackgroundPrefab: {fileID: 0}
+  options: []
