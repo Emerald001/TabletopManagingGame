@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0e5326f8ac34d4ebb960ea090af766, type: 3}
   m_Name: TestQuest
   m_EditorClassIdentifier: 
-  name: 
-  Icon: {fileID: 0}
-  difficulty: 0
-  discription: 
+  Icon: {fileID: 21300000, guid: 0e72db9c6e6c8ee45b37f16b8b246bca, type: 3}
+  name: Kill Mercenairy
+  discription: You have to kill a mercenairy, he is a little bad, so yeah, good luck!
+  extraDisc: KILL HIMMMMM!!
+  extraRewards: []
+  goal: 1
+  difficulty: 1
+  area: {fileID: 11400000, guid: e47a9238b74197c4ca66cb9342621605, type: 2}
