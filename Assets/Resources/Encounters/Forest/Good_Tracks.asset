@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Animal Tracks
   Icon: {fileID: 21300000, guid: ea9fe4b52c031754c998e4830bcf1b22, type: 3}
+  Rarity: 1
   lightColor: {r: 0.84122324, g: 0.9811321, b: 0.31933072, a: 0}
   ObstaclePrefab: {fileID: 8818938584739417411, guid: e3804b37dda5a4d4893858a735932b35, type: 3}
   SurroundingPrefab: {fileID: 6388449673953122018, guid: f445a267610131646b29990133891a75, type: 3}
@@ -23,6 +24,7 @@ MonoBehaviour:
     Description: You decide to follow the tracks, with a few men you reach an open
       area. Deer are grazing, perfect positions to strike, taking quite a good bounty
       and finding some water on your way back.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 2
     GoldUse: 0
@@ -34,6 +36,7 @@ MonoBehaviour:
   - Name: Wait for more animals to come by
     Description: Your men sit patiently, hoping more deer will come by. They are
       in luck, not long after, some deer pass through again, right in your ambush.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 0
@@ -44,6 +47,7 @@ MonoBehaviour:
     WaterGive: 0
   - Name: Ignore the tracks and continue
     Description: You chose to ignore the tracks, continuing your quest.
+    EventToCall: 0
     WoodUse: 0
     MeatUse: 0
     GoldUse: 0
