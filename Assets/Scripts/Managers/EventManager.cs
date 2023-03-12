@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public enum EventType {
     EMPTY,
@@ -11,11 +9,14 @@ public enum EventType {
     ON_CARAVAN_STOPPED,
     ON_ENCOUNTER_ENDED,
     DO_SCREENSHAKE,
+    ADD_CARAVAN,
+    ADD_HUMAN,
     DESTROY_CARAVAN,
     DESTROY_HUMAN,
     NEXT_ACTION,
     DO_GAME_OVER,
-    SET_AREA
+    SET_AREA,
+    SET_QUEST
 }
 
 public static class EventManager {

@@ -37,9 +37,9 @@ public class StartingArea : MonoBehaviour
 
     public void ClickOnHouse(HoverOverHouse house) {
         if (currentCanvas) {
-            actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10,  UpperPos, "Swish", 0f));
+            actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10,  UpperPos, "Swish"));
         }
         actionManager.Enqueue(new DoMethodAction(() => currentCanvas = house.HouseCanvas ));
-        actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, transform, "Swish", 0f));
+        actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, transform, "Swish"));
     }
 }

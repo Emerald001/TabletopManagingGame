@@ -47,8 +47,6 @@ public class MenuFunctionality : MonoBehaviour
     }
 
     public void OnEmptyQueue() {
-        Debug.Log("Empty Queue");
-
         CanInvoke = true;
     }
 
@@ -72,12 +70,12 @@ public class MenuFunctionality : MonoBehaviour
         SettingsMenuCurrentlyActive = !SettingsMenuCurrentlyActive;
 
         if (SettingsMenuCurrentlyActive) {
-            actionManager.Enqueue(new MoveObjectAction(menu, 10000, MainSidePos, "", 0));
-            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(menu, 10000, MainSidePos));
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos));
         }
         else {
-            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos, "", 0));
-            actionManager.Enqueue(new MoveObjectAction(menu, 10000, MainStandardPos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
+            actionManager.Enqueue(new MoveObjectAction(menu, 10000, MainStandardPos));
         }
     }
 
@@ -89,12 +87,12 @@ public class MenuFunctionality : MonoBehaviour
         PauseMenuCurrentlyActive = !PauseMenuCurrentlyActive;
 
         if (PauseMenuCurrentlyActive) {
-            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainStandardPos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainStandardPos));
             EventManager.Invoke(EventType.ON_GAME_PAUSED);
             EventManager<bool>.Invoke(EventType.ON_GAME_PAUSED, false);
         }
         else {
-            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainHiddenPos, "", 0));
+            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainHiddenPos));
             EventManager.Invoke(EventType.ON_GAME_UNPAUSED);
             EventManager<bool>.Invoke(EventType.ON_GAME_UNPAUSED, true);
         }
@@ -107,8 +105,8 @@ public class MenuFunctionality : MonoBehaviour
     }
 
     public void HideMenu() {
-        actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos, "", 0));
-        actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainHiddenPos, "", 0));
+        actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
+        actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainHiddenPos));
 
         CanPause = true;
     }

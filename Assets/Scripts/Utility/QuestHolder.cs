@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -18,9 +16,17 @@ public class QuestHolder : MonoBehaviour
         Icon.sprite = quest.Icon;
         Name.text = quest.name;
         Discription.text = quest.discription;
+        GoalReason.text = quest.extraDisc;
+
+        string extraRewards = "";
+        for (int i = 0; i < quest.extraRewards.Count; i++) {
+            extraRewards += $"- {quest.extraRewards[i]}\r";
+        }
+
+        ExtraRewards.text = extraRewards;
     }
 
     public void SetGoal(int currentVal, int maxVal) {
-        Goal.text = currentVal.ToString() + "/" + maxVal.ToString();
+        Goal.text = $"Goal: {currentVal} / {maxVal}";
     }
 }

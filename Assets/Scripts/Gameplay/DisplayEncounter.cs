@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,21 +60,21 @@ public class DisplayEncounter : MonoBehaviour {
         currentSurrouning = Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity);
 
         actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
-        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundStandardTransform, "BackgroundHit", .4f));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundStandardTransform.position, "BackgroundHit", .4f));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform, "ForegroundHit", .2f));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform.position, "ForegroundHit", .2f));
         actionQueue.Enqueue(new WaitAction(.2f));
         actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
         actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform.position, "PaperRoll", 0));
         actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
     }
 
     public void PartTwo(Option PickedOption) {
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasUpperTransform.position, "PaperRoll", 0));
         actionQueue.Enqueue(new DoMethodAction(RemoveOptions));
         actionQueue.Enqueue(new DoMethodAction<Option>(DisplayOutcome, PickedOption));
-        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasStandardTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasStandardTransform.position, "PaperRoll", 0));
         actionQueue.Enqueue(new DoMethodAction(() => { tmpboolWaiting = true; }));
         actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
         actionQueue.Enqueue(new DoMethodAction<Option>(GameManager.instance.Rmanager.AddResources, PickedOption));
@@ -84,12 +83,12 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void PartThree() {
-        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasUpperTransform, "PaperRoll", 0));
+        actionQueue.Enqueue(new MoveObjectAction(outcomeCanvas.gameObject, 10, CanvasUpperTransform.position, "PaperRoll", 0));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundUpperTransform.position, "", 0));
         actionQueue.Enqueue(new DestoyObjectAction(currentSurrouning));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundUpperTransform, "", 0));
+        actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, BackgroundUpperTransform.position, "", 0));
         actionQueue.Enqueue(new DestoyObjectAction(currentBackground));
         actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, standardCandleColors));
     }

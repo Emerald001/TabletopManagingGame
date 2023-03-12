@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using TMPro;
-using System.Linq;
+using UnityEngine.UIElements;
 
 public class EncounterStack : MonoBehaviour
 {
@@ -13,14 +12,15 @@ public class EncounterStack : MonoBehaviour
     public bool Displaying;
 
     public GameObject CardPrefab;
-    public Transform CardPos;
-    public Transform LiftedCardPos;
+    public Transform CurrentCardPos;
+    public Transform CurrentLiftedCardPos;
     public Transform DisplayPos;
     public Transform SlamDownPos;
     public Transform EndCardPos;
 
     public GameObject PastStack;
 
+    private List<GameObject> nextEncounters = new();
     private List<GameObject> pastEncounters = new();
 
     private AreaSO currentArea;
@@ -29,23 +29,33 @@ public class EncounterStack : MonoBehaviour
     [HideInInspector] public Transform CurrentCard;
     [HideInInspector] public Transform lastCard;
 
+    private Transform NewCardStackPos;
+
+    private ActionManager actionQueue;
+
     private void OnEnable() {
-        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
+        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
         EventManager<AreaSO>.Subscribe(EventType.SET_AREA, SetArea);
         //EventManager<EncounterSO>.Subscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
     private void OnDisable() {
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClick);
+        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
         EventManager<AreaSO>.Unsubscribe(EventType.SET_AREA, SetArea);
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
 
     void Start() {
-        CurrentCard = Instantiate(CardPrefab).transform;
-        CurrentCard.SetPositionAndRotation(CardPos.position, CardPos.rotation);
+        actionQueue = new(EmptyQueue);
+
+        NewCardStackPos = transform;
+
+        //CurrentCard = Instantiate(CardPrefab).transform;
+        //CurrentCard.SetPositionAndRotation(CurrentCardPos.position, CurrentCardPos.rotation);
     }
 
     void Update() {
+        actionQueue.OnUpdate();
+
         if (!CanClick) 
             return;
 
@@ -58,10 +68,10 @@ public class EncounterStack : MonoBehaviour
         CheckForHover();
 
         if (Hovering) {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, LiftedCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, LiftedCardPos.rotation, 20 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CurrentLiftedCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CurrentLiftedCardPos.rotation, 20 * Time.deltaTime));
         }
         else {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CardPos.rotation, 20 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CurrentCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CurrentCardPos.rotation, 20 * Time.deltaTime));
         }
 
         if (Hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
@@ -74,7 +84,7 @@ public class EncounterStack : MonoBehaviour
             StartCoroutine(DisplayCards());
         }
     }
-
+    
     public void CheckForHover() { 
         Ray target = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -91,6 +101,10 @@ public class EncounterStack : MonoBehaviour
         }
     }
 
+    public void EmptyQueue() {
+
+    }
+
     public void StartEncounter(EncounterSO encounter) {
         GameManager.instance.Amanager.PlayAudio("CardGrab");
 
@@ -98,21 +112,43 @@ public class EncounterStack : MonoBehaviour
 
         CurrentCard.GetChild(1).GetComponent<TextMeshPro>().text = encounter.name;
         CurrentCard.GetChild(0).GetComponent<SpriteRenderer>().sprite = encounter.Icon;
-        StartCoroutine(MoveCard(DisplayPos, false, false));
+        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, DisplayPos));
 
         CanClick = false;
     }
 
-    public void ResetClick() {
+    public void ResetClickOnEncounterEnded() {
         CanClick = false;
 
-        StartCoroutine(MoveCard(SlamDownPos, true, false));
+        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, SlamDownPos));
+        actionQueue.Enqueue(new WaitAction(.3f));
+        actionQueue.Enqueue(new DoMethodAction(() => GameManager.instance.Amanager.PlayAudio("CardSlam")));
+        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos));
     }
 
     public void SetArea(AreaSO area) {
         currentArea = area;
 
         currentEncounterIndex = 0;
+
+        SpawnAllCards();
+    }
+
+    public void SpawnAllCards() {
+        for (int i = 0; i < currentArea.EncounterAmount; i++) {
+            var tmp = Instantiate(CardPrefab);
+            tmp.transform.position = transform.position + new Vector3(0, 3, 0);
+
+            var tmpTf = new GameObject().transform;
+
+            tmpTf.transform.position = transform.position + new Vector3(0, i * .01f + .01f, 0);
+            tmpTf.transform.eulerAngles = transform.eulerAngles + new Vector3(0, Random.Range(-5, 5), 0);
+
+            actionQueue.Enqueue(new MoveObjectAction(tmp, 20f, tmpTf, "", .08f));
+            actionQueue.Enqueue(new DestoyObjectAction(tmpTf.gameObject));
+
+            nextEncounters.Add(tmp);
+        }
     }
 
     public EncounterSO GetEncouterFromArea() {
@@ -122,41 +158,16 @@ public class EncounterStack : MonoBehaviour
             throw new System.Exception($"Should not be possible! New area should already be set!");
 
         if (tmp[currentEncounterIndex] == null)
-            return currentArea.PossibleEncounters[Random.Range(0, currentArea.PossibleEncounters.Count)];
+            return currentArea.PossibleEncounters[SkewedRandomRange(currentArea.PossibleEncounters.Count)];
 
         return tmp[currentEncounterIndex];
     }
 
-    #region Sequence
-    private IEnumerator MoveCard(Transform targetPos, bool slam, bool end) {
-        while (CurrentCard.position != targetPos.position) {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, targetPos.position, 10 * Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, targetPos.rotation, 30 * Time.deltaTime));
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        if (slam) {
-            yield return new WaitForSeconds(.3f);
-
-            GameManager.instance.Amanager.PlayAudio("CardSlam");
-
-            var tmp = EndCardPos;
-            StartCoroutine(MoveCard(tmp, false, true));
-        }
-
-        if (end) {
-            EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .2f);
-
-            CurrentCard.position = EndCardPos.position + new Vector3(0, pastEncounters.Count * .001f, 0);
-            pastEncounters.Add(CurrentCard.gameObject);
-
-            CurrentCard = Instantiate(CardPrefab).transform;
-            CurrentCard.SetPositionAndRotation(CardPos.position, CardPos.rotation);
-
-            CanClick = true;
-        }
+    private int SkewedRandomRange(float maxVal) {
+        return Mathf.RoundToInt(Mathf.Pow(Random.value, maxVal) * (maxVal - 0) + 0);
     }
 
+    #region Sequence
     private IEnumerator DisplayCards() {
         float middle = pastEncounters.Count / 2;
 

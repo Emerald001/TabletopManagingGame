@@ -11,9 +11,13 @@ public class GameManager : MonoBehaviour
     }
 
     public Option startingResources;
+
+    public QuestSO currentQuest;
+
     public ResourceManager Rmanager;
     public CaravanWalk Mmanager;
     public AudioManager Amanager;
+    public QuestManager Qmanager;
     public DisplayEncounter EncounterDisplay;
 
     private EncounterSO currentEncounter;
@@ -47,6 +51,10 @@ public class GameManager : MonoBehaviour
     void Update() {
         if (Input.GetKeyDown(KeyCode.R)) {
             EventManager.Invoke(EventType.DO_SCREENSHAKE);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H)) {
+            EventManager<QuestSO>.Invoke(EventType.SET_QUEST, currentQuest);
         }
 
         for (int i = 0; i < EncounterDisplay.buttons.Count; i++) {

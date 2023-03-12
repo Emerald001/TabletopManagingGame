@@ -1,16 +1,35 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class RunDataManager : MonoBehaviour
 {
+    public RunData CurrentRunData;
+
+    public void LoadData() {
+
+    }
+}
+
+[System.Serializable]
+public struct ResourcesData {
+    public int Materials;
+    public int Food;
+    public int Gold;
+
+    public float Water;
+}
+
+[Serializable]
+public class RunData {
     [Header("Run Data")]
     public List<GameObject> Team = new();
     public List<GameObject> Horses = new();
     public List<GameObject> Carts = new();
 
-    public List<QuestSO> Quests = new();
     public List<GameObject> Items = new();
+    public QuestSO Quest;
 
     [Header("Choises Made")]
     [Range(0, 100)]
@@ -27,25 +46,5 @@ public class RunDataManager : MonoBehaviour
 
     [Header("Misc")]
     public ResourcesData currentResources;
-    public Areas currentArea;
-
-
-}
-
-[System.Serializable]
-public struct ResourcesData {
-    public int Materials;
-    public int Food;
-    public int Gold;
-
-    public float Water;
-}
-
-public enum Areas{
-    Village,
-    Forest,
-    Swamp,
-    Canyon,
-    Caves,
-    Desert
+    public AreaSO currentArea;
 }
