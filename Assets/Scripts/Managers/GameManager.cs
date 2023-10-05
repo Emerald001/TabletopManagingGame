@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -49,18 +47,15 @@ public class GameManager : MonoBehaviour
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.R)) {
+        if (Input.GetKeyDown(KeyCode.R))
             EventManager.Invoke(EventType.DO_SCREENSHAKE);
-        }
 
-        if (Input.GetKeyDown(KeyCode.H)) {
+        if (Input.GetKeyDown(KeyCode.H))
             EventManager<QuestSO>.Invoke(EventType.SET_QUEST, currentQuest);
-        }
 
         for (int i = 0; i < EncounterDisplay.buttons.Count; i++) {
-            if (EncounterDisplay.buttons[i].GetComponent<OnButtonHover>().ShowResources) {
+            if (EncounterDisplay.buttons[i].GetComponent<OnButtonHover>().ShowResources)
                 Rmanager.ShowResources(currentEncounter.options[i]);
-            }
         }
     }
 

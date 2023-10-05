@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class StartingArea : MonoBehaviour
 {
@@ -26,9 +24,8 @@ public class StartingArea : MonoBehaviour
     private void Init() {
         actionManager = new(EndQueue);
 
-        foreach (var item in houses) {
+        foreach (var item in houses)
             item.Init();
-        }
     }
 
     public void EndQueue() {
@@ -36,9 +33,9 @@ public class StartingArea : MonoBehaviour
     }
 
     public void ClickOnHouse(HoverOverHouse house) {
-        if (currentCanvas) {
-            actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10,  UpperPos, "Swish"));
-        }
+        if (currentCanvas) 
+            actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, UpperPos, "Swish"));
+
         actionManager.Enqueue(new DoMethodAction(() => currentCanvas = house.HouseCanvas ));
         actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, transform, "Swish"));
     }

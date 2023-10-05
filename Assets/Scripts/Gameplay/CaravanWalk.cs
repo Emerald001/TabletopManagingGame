@@ -41,14 +41,14 @@ public class CaravanWalk : MonoBehaviour {
 
     private void OnEnable() {
         EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
-        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Subscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
+        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager<AreaSO>.Subscribe(EventType.SET_AREA, SetArea);
     }
     private void OnDisable() {
         EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, StartEncounter);
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager.Unsubscribe(EventType.DESTROY_CARAVAN, RemoveCaravan);
+        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, Restart);
         EventManager<AreaSO>.Unsubscribe(EventType.SET_AREA, SetArea);
     }
 
@@ -78,8 +78,7 @@ public class CaravanWalk : MonoBehaviour {
 
     private void UpdateSurroundingsPositions() {
         for (int i = Surroundings.Count - 1; i >= 0; i--) {
-            var item = Surroundings[i];
-
+            GameObject item = Surroundings[i];
             item.transform.position = Vector3.MoveTowards(item.transform.position, new Vector3(End.transform.position.x, item.transform.position.y, item.transform.position.z), currentsSpeed / 300 * Time.deltaTime);
 
             if (item.transform.position == new Vector3(End.transform.position.x, item.transform.position.y, item.transform.position.z)) {
@@ -105,20 +104,18 @@ public class CaravanWalk : MonoBehaviour {
 
     private void UpdateCaravanPositions() {
         for (int i = 0; i < Caravans.Count; i++) {
-            Vector3 tmp = new(0, 0, Random.Range(-0.001f, 0.001f));
+            Vector3 offset = new(0, 0, Random.Range(-0.001f, 0.001f));
 
-            var currentPos = CaravanPositions[i].transform;
-            var currentHorse = Horses[i].transform;
-            var currentCaravan = Caravans[i].transform;
+            Transform currentPos = CaravanPositions[i].transform;
+            Transform currentHorse = Horses[i].transform;
+            Transform currentCaravan = Caravans[i].transform;
 
-            currentPos.position += tmp;
-            if (Mathf.Abs(currentPos.position.z - transform.position.z) > .1f) {
+            currentPos.position += offset;
+            if (Mathf.Abs(currentPos.position.z - transform.position.z) > .1f)
                 currentPos.position = new Vector3(currentPos.position.x, currentPos.position.y, transform.position.z);
-            }
 
             currentHorse.position = Vector3.MoveTowards(currentHorse.position, currentPos.position, currentsSpeed / 100 * Time.deltaTime);
-
-            var newPos = new Vector3(currentCaravan.position.x, currentCaravan.position.y, currentHorse.position.z);
+            Vector3 newPos = new(currentCaravan.position.x, currentCaravan.position.y, currentHorse.position.z);
 
             currentCaravan.LookAt(new Vector3(currentHorse.position.x, transform.position.y + .03f, currentHorse.position.z));
             currentCaravan.position = Vector3.MoveTowards(currentCaravan.position, newPos, currentsSpeed / 500 * Time.deltaTime);
@@ -127,7 +124,7 @@ public class CaravanWalk : MonoBehaviour {
     }
 
     void SpawnSurroundings(GameObject model, float offset) {
-        var item = Instantiate(model, ObjectParent);
+        GameObject item = Instantiate(model, ObjectParent);
 
         item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z + offset);
         item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
@@ -138,35 +135,33 @@ public class CaravanWalk : MonoBehaviour {
     }
 
     public void AddCaravan() {
-        var tmp = new GameObject();
-        CaravanPositions.Add(tmp);
+        GameObject go = new();
+        CaravanPositions.Add(go);
 
-        var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
+        float totalWidth = caravanWidth * (CaravanPositions.Count + 1);
+        float dis = totalWidth / (CaravanPositions.Count + 1);
 
-        var dis = totalWidth / (CaravanPositions.Count + 1);
-
-        var tmpHorse = Instantiate(HorsePrefab);
+        GameObject tmpHorse = Instantiate(HorsePrefab);
         tmpHorse.transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y + .16f, transform.position.z);
         Horses.Add(tmpHorse);
 
-        var tmpCaravan = Instantiate(CaravanPrefab);
+        GameObject tmpCaravan = Instantiate(CaravanPrefab);
         tmpCaravan.transform.position = new Vector3(transform.position.x + 3f, transform.position.y + .03f, transform.position.z);
         Caravans.Add(tmpCaravan);
 
-        for (int i = 0; i < CaravanPositions.Count; i++) {
+        for (int i = 0; i < CaravanPositions.Count; i++)
             CaravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
-        }
     }
 
     public void RemoveCaravan() {
-        var tmp = CaravanPositions[^1];
+        GameObject go = CaravanPositions[^1];
 
-        CaravanPositions.Remove(tmp);
+        CaravanPositions.Remove(go);
 
-        Destroy(tmp);
+        Destroy(go);
 
-        var Horse = Horses[^1];
-        var caravan = Caravans[^1];
+        GameObject Horse = Horses[^1];
+        GameObject caravan = Caravans[^1];
 
         Horses.Remove(Horse);
         Caravans.Remove(caravan);
@@ -174,17 +169,15 @@ public class CaravanWalk : MonoBehaviour {
         Surroundings.Add(Horse);
         Surroundings.Add(caravan);
 
-        var totalWidth = caravanWidth * (CaravanPositions.Count + 1);
+        float totalWidth = caravanWidth * (CaravanPositions.Count + 1);
+        float dis = totalWidth / (CaravanPositions.Count + 1);
 
-        var dis = totalWidth / (CaravanPositions.Count + 1);
-
-        for (int i = 0; i < CaravanPositions.Count; i++) {
+        for (int i = 0; i < CaravanPositions.Count; i++)
             CaravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
-        }
     }
 
     public void SpawnObstacle(GameObject obstacle) {
-        var item = Instantiate(obstacle, ObjectParent);
+        GameObject item = Instantiate(obstacle, ObjectParent);
 
         item.transform.position = new Vector3(Beginning.transform.position.x, transform.position.y + 2, Beginning.transform.position.z);
 

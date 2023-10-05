@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,15 +12,16 @@ public class AreaSO : ScriptableObject
     public List<GameObject> BackgroundPrefabs = new();
 
     public string EncounterFolderName;
-    public int EncounterAmount;
-    public List<EncounterSO> ScriptedEncounters = new();
 
-    private List<EncounterSO> possibleEncounters;
+    private List<EncounterSO> possibleEncounters = null;
     public List<EncounterSO> PossibleEncounters {
-        get { if (possibleEncounters == null) {
-                var tmp = new List<EncounterSO>(Resources.LoadAll<EncounterSO>(EncounterFolderName));
-                possibleEncounters = tmp.OrderBy(x => x.Rarity).ToList();
+        get { 
+            if (possibleEncounters == null) {
+                List<EncounterSO> list = new(Resources.LoadAll<EncounterSO>($"Encounters/{EncounterFolderName}/"));
+                possibleEncounters = list.OrderBy(x => x.Rarity).ToList();
             }
-            return possibleEncounters; }
+            return possibleEncounters; 
+        }
+        private set { }
     }
 }

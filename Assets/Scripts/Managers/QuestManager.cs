@@ -16,7 +16,6 @@ public class QuestManager : MonoBehaviour
         currentQuest = quest;
 
         QuestHolder.SetQuestInfo(quest);
-
         QuestHolder.SetGoal(0, currentQuest.goal);
 
         EventManager<AreaSO>.Invoke(EventType.SET_AREA, currentQuest.area);

@@ -106,32 +106,22 @@ public class DisplayEncounter : MonoBehaviour {
             return;
 
         for (int i = 0; i < encounter.options.Count; i++) {
-            var tmp = Instantiate(buttonPrefab, encounterCanvas.transform);
-            tmp.name = "Button " + i.ToString();
-            tmp.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.options[i].Name;
+            Button button = Instantiate(buttonPrefab, encounterCanvas.transform);
+            button.name = "Button " + i.ToString();
+            button.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = encounter.options[i].Name;
 
-            tmp.GetComponent<RectTransform>().localPosition = new Vector3(0, 150 + i * -200, 0);
+            button.GetComponent<RectTransform>().localPosition = new Vector3(0, 150 + i * -200, 0);
 
-            var tmpButton = tmp.GetComponent<Button>();
+            if (GameManager.instance.Rmanager.WoodStack.StackAmount < encounter.options[i].WoodUse ||
+                GameManager.instance.Rmanager.MeatStack.StackAmount < encounter.options[i].MeatUse ||
+                GameManager.instance.Rmanager.GoldStack.StackAmount < encounter.options[i].GoldUse ||
+                GameManager.instance.Rmanager.WaterStack.StackAmount < encounter.options[i].WaterUse)
+                button.interactable = false;
 
-            if (GameManager.instance.Rmanager.WoodStack.StackAmount < encounter.options[i].WoodUse) {
-                tmpButton.interactable = false;
-            }
-            else if (GameManager.instance.Rmanager.MeatStack.StackAmount < encounter.options[i].MeatUse) {
-                tmpButton.interactable = false;
-            }
-            else if (GameManager.instance.Rmanager.GoldStack.StackAmount < encounter.options[i].GoldUse) {
-                tmpButton.interactable = false;
-            }
-            else if (GameManager.instance.Rmanager.WaterStack.StackAmount < encounter.options[i].WaterUse) {
-                tmpButton.interactable = false;
-            }
+            int param = i;
+            button.onClick.AddListener(delegate { ChoseOption(param); });
 
-            var param = i;
-
-            tmpButton.onClick.AddListener(delegate { ChoseOption(param); });
-
-            buttons.Add(tmp.gameObject);
+            buttons.Add(button.gameObject);
         }
 
         bool check = true;
@@ -140,9 +130,8 @@ public class DisplayEncounter : MonoBehaviour {
                 check = false;
         }
 
-        if (check) {
+        if (check)
             EventManager.Invoke(EventType.DO_GAME_OVER);
-        }
     }
 
     public void RemoveOptions() {
@@ -157,9 +146,8 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void ChoseOption(int ID) {
-        foreach (var item in buttons) {
+        foreach (var item in buttons)
             item.GetComponent<Button>().interactable = false;
-        }
 
         GameManager.instance.Rmanager.RemoveResources(currentEncounter.options[ID]);
         PartTwo(currentEncounter.options[ID]);
@@ -172,8 +160,7 @@ public class DisplayEncounter : MonoBehaviour {
     }
 
     public void SetColor(Color color) {
-        foreach (var item in candleLights) {
+        foreach (var item in candleLights)
             item.color = color;
-        }
     }
 }

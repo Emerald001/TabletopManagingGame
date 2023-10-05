@@ -19,9 +19,8 @@ public class QuestHolder : MonoBehaviour
         GoalReason.text = quest.extraDisc;
 
         string extraRewards = "";
-        for (int i = 0; i < quest.extraRewards.Count; i++) {
+        for (int i = 0; i < quest.extraRewards.Count; i++)
             extraRewards += $"- {quest.extraRewards[i]}\r";
-        }
 
         ExtraRewards.text = extraRewards;
     }

@@ -41,9 +41,8 @@ public class MenuFunctionality : MonoBehaviour
     private void Update() {
         actionManager.OnUpdate();
 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            TogglePauseMenu();
-        } 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            TogglePauseMenu();    
     }
 
     public void OnEmptyQueue() {
