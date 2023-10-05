@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Village
   AmbientLightColor: {r: 1, g: 0.8980808, b: 0.6179246, a: 1}
-  ForegroundPrefabs: []
-  BackgroundPrefabs: []
+  ForegroundPrefabs:
+  - {fileID: 334758637852582292, guid: 3dd74c1d1a1797849a1f1a3638300649, type: 3}
+  - {fileID: 6423475918032749172, guid: ba5403068ecd04d4caa7dbac38d15284, type: 3}
+  BackgroundPrefabs:
+  - {fileID: 1750765501545172845, guid: 12a7b4c0838853b4299ee1aad4258e5d, type: 3}
+  - {fileID: 435945070979692157, guid: 8949fa3f2931a1a4794f829dcc2c20fb, type: 3}
   EncounterFolderName: '-'
-  ScriptedEncounters:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}

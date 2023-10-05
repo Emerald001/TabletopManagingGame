@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef0e5326f8ac34d4ebb960ea090af766, type: 3}
+  m_Name: NewGameQuest
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: 9c11202bd58b74e46a352800b29dfb8e, type: 3}
+  name: Get out of the forest
+  discription: You find yourself in a forest, unsure of how you got there.
+  extraDisc: You need to find a way to a village
+  extraRewards: []
+  goal: 1
+  difficulty: 0
+  area: {fileID: 11400000, guid: 1bcc8c3e98abd664cafed3dd56e6c1bc, type: 2}
+  EncounterAmount: 5
+  ScriptedEncounters:
+  - {fileID: 11400000, guid: c799cd27491424b42852058a9aa3f808, type: 2}
+  - {fileID: 11400000, guid: 4bb3da4fd585b7d4581e159a1a27c8a0, type: 2}
+  - {fileID: 11400000, guid: 07fdbe54c91c54e49b8b4f9cd5dc0fe5, type: 2}
+  - {fileID: 11400000, guid: 1cc252f441cd582439506a264d83868b, type: 2}
+  - {fileID: 11400000, guid: a355600fd7e0db143b37719071ad43c1, type: 2}
