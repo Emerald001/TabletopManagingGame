@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,4 +21,6 @@ public class QuestSO : ScriptableObject
     public Difficulty difficulty;
 
     public AreaSO area;
+    public int EncounterAmount;
+    public List<EncounterSO> ScriptedEncounters = new();
 }

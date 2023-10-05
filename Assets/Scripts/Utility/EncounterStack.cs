@@ -1,19 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using UnityEngine.UIElements;
+using UnityEngine;
 
 public class EncounterStack : MonoBehaviour
 {
-    public bool CanClick;
-    public bool Hovering;
-    public bool HoveringOldStack;
-    public bool Displaying;
+    [Header("References")]
+    public QuestSO Village;
 
     public GameObject CardPrefab;
-    public Transform CurrentCardPos;
-    public Transform CurrentLiftedCardPos;
     public Transform DisplayPos;
     public Transform SlamDownPos;
     public Transform EndCardPos;
@@ -22,35 +17,39 @@ public class EncounterStack : MonoBehaviour
 
     private List<GameObject> nextEncounters = new();
     private List<GameObject> pastEncounters = new();
+    private List<Transform> nextEncountersTransforms = new();
 
     private AreaSO currentArea;
+    private QuestSO currentQuest;
     private int currentEncounterIndex;
 
-    [HideInInspector] public Transform CurrentCard;
-    [HideInInspector] public Transform lastCard;
+    private Transform CurrentCard;
+    private Transform lastCard;
 
-    private Transform NewCardStackPos;
+    private Transform CurrentCardPos;
+    private Transform CurrentLiftedCardPos;
+
+    private bool CanClick;
+    private bool Hovering;
+    private bool HoveringOldStack;
+    private bool Displaying;
 
     private ActionManager actionQueue;
 
     private void OnEnable() {
+        EventManager<QuestSO>.Subscribe(EventType.SET_QUEST, SetQuest);
         EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
-        EventManager<AreaSO>.Subscribe(EventType.SET_AREA, SetArea);
-        //EventManager<EncounterSO>.Subscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
     private void OnDisable() {
+        EventManager<QuestSO>.Unsubscribe(EventType.SET_QUEST, SetQuest);
         EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
-        EventManager<AreaSO>.Unsubscribe(EventType.SET_AREA, SetArea);
-        EventManager<EncounterSO>.Unsubscribe(EventType.ON_GAME_STARTED, StartEncounter);
     }
 
     void Start() {
+        CurrentLiftedCardPos = new GameObject().transform;
+        CurrentLiftedCardPos.SetParent(transform);
+
         actionQueue = new(EmptyQueue);
-
-        NewCardStackPos = transform;
-
-        //CurrentCard = Instantiate(CardPrefab).transform;
-        //CurrentCard.SetPositionAndRotation(CurrentCardPos.position, CurrentCardPos.rotation);
     }
 
     void Update() {
@@ -68,10 +67,26 @@ public class EncounterStack : MonoBehaviour
         CheckForHover();
 
         if (Hovering) {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CurrentLiftedCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CurrentLiftedCardPos.rotation, 20 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(
+                Vector3.MoveTowards(
+                    CurrentCard.position,
+                    CurrentLiftedCardPos.position,
+                    Time.deltaTime),
+                Quaternion.Lerp(
+                    CurrentCard.rotation,
+                    CurrentLiftedCardPos.rotation,
+                    20 * Time.deltaTime));
         }
         else {
-            CurrentCard.SetPositionAndRotation(Vector3.MoveTowards(CurrentCard.position, CurrentCardPos.position, Time.deltaTime), Quaternion.Lerp(CurrentCard.rotation, CurrentCardPos.rotation, 20 * Time.deltaTime));
+            CurrentCard.SetPositionAndRotation(
+                Vector3.MoveTowards(
+                    CurrentCard.position,
+                    CurrentCardPos.position,
+                    Time.deltaTime),
+                Quaternion.Lerp(
+                    CurrentCard.rotation,
+                    CurrentCardPos.rotation,
+                    20 * Time.deltaTime));
         }
 
         if (Hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
@@ -80,9 +95,8 @@ public class EncounterStack : MonoBehaviour
             currentEncounterIndex++;
         }
 
-        if (HoveringOldStack && Input.GetKeyDown(KeyCode.Mouse0)) {
+        if (HoveringOldStack && Input.GetKeyDown(KeyCode.Mouse0))
             StartCoroutine(DisplayCards());
-        }
     }
     
     public void CheckForHover() { 
@@ -105,7 +119,22 @@ public class EncounterStack : MonoBehaviour
 
     }
 
+    public void SetNextCardActive() {
+        if (nextEncounters.Count < 1) {
+            Debug.Log("No More Encounters, going back to village!");
+            EventManager<QuestSO>.Invoke(EventType.SET_QUEST, Village);
+        }
+
+        CurrentCard = nextEncounters[^1].transform;
+        CurrentCardPos = nextEncountersTransforms[^1];
+        CurrentLiftedCardPos.position = CurrentCardPos.position + new Vector3(0, .01f, 0);
+
+        CanClick = true;
+    }
+
     public void StartEncounter(EncounterSO encounter) {
+        Debug.Log(encounter);
+
         GameManager.instance.Amanager.PlayAudio("CardGrab");
 
         EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, encounter);
@@ -114,20 +143,24 @@ public class EncounterStack : MonoBehaviour
         CurrentCard.GetChild(0).GetComponent<SpriteRenderer>().sprite = encounter.Icon;
         actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, DisplayPos));
 
+        nextEncounters.Remove(CurrentCard.gameObject);
+        nextEncountersTransforms.Remove(CurrentCardPos);
+        Destroy(CurrentCardPos.gameObject);
+
         CanClick = false;
     }
 
     public void ResetClickOnEncounterEnded() {
-        CanClick = false;
-
         actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, SlamDownPos));
         actionQueue.Enqueue(new WaitAction(.3f));
         actionQueue.Enqueue(new DoMethodAction(() => GameManager.instance.Amanager.PlayAudio("CardSlam")));
-        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos));
+        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos, "", .3f));
+        actionQueue.Enqueue(new DoMethodAction(SetNextCardActive));
     }
 
-    public void SetArea(AreaSO area) {
-        currentArea = area;
+    public void SetQuest(QuestSO quest) {
+        currentQuest = quest;
+        currentArea = Instantiate(quest.area);
 
         currentEncounterIndex = 0;
 
@@ -135,32 +168,36 @@ public class EncounterStack : MonoBehaviour
     }
 
     public void SpawnAllCards() {
-        for (int i = 0; i < currentArea.EncounterAmount; i++) {
-            var tmp = Instantiate(CardPrefab);
-            tmp.transform.position = transform.position + new Vector3(0, 3, 0);
+        Debug.Log(currentQuest.EncounterAmount);
+        for (int i = 0; i < currentQuest.EncounterAmount; i++) {
 
-            var tmpTf = new GameObject().transform;
+            GameObject card = Instantiate(CardPrefab, transform);
+            card.transform.position = transform.position + new Vector3(0, 3, 0);
+
+            Transform tmpTf = new GameObject().transform;
 
             tmpTf.transform.position = transform.position + new Vector3(0, i * .01f + .01f, 0);
             tmpTf.transform.eulerAngles = transform.eulerAngles + new Vector3(0, Random.Range(-5, 5), 0);
 
-            actionQueue.Enqueue(new MoveObjectAction(tmp, 20f, tmpTf, "", .08f));
-            actionQueue.Enqueue(new DestoyObjectAction(tmpTf.gameObject));
+            actionQueue.Enqueue(new MoveObjectAction(card, 20f, tmpTf, "", .08f));
 
-            nextEncounters.Add(tmp);
+            nextEncounters.Add(card);
+            nextEncountersTransforms.Add(tmpTf);
         }
+
+        SetNextCardActive();
     }
 
     public EncounterSO GetEncouterFromArea() {
-        var tmp = currentArea.ScriptedEncounters;
+        List<EncounterSO> list = currentQuest.ScriptedEncounters;
 
-        if (tmp.Count < currentEncounterIndex)
-            throw new System.Exception($"Should not be possible! New area should already be set!");
+        if (list.Count < currentEncounterIndex)
+            throw new System.Exception($"Should not be possible! New <color=red>Quest</color> should already be set!");
 
-        if (tmp[currentEncounterIndex] == null)
-            return currentArea.PossibleEncounters[SkewedRandomRange(currentArea.PossibleEncounters.Count)];
+        if (list[currentEncounterIndex] == null)
+            return currentArea.PossibleEncounters[SkewedRandomRange(currentArea.PossibleEncounters.Count - 1)];
 
-        return tmp[currentEncounterIndex];
+        return list[currentEncounterIndex];
     }
 
     private int SkewedRandomRange(float maxVal) {

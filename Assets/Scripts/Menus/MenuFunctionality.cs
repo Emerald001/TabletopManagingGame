@@ -5,7 +5,7 @@ using UnityEngine;
 public class MenuFunctionality : MonoBehaviour
 {
     [Header("Toggle Menus")]
-    public EncounterSO StartEncounter;
+    public QuestSO StartQuest;
     public GameObject SettingsToggle;
     public GameObject MainMenuToggle;
     public GameObject PauseMenuToggle;
@@ -50,13 +50,13 @@ public class MenuFunctionality : MonoBehaviour
     }
 
     public void Continue() {
-        EventManager<EncounterSO>.Invoke(EventType.ON_GAME_STARTED, StartEncounter);
+        EventManager<QuestSO>.Invoke(EventType.ON_GAME_STARTED, StartQuest);
         EventManager<bool>.Invoke(EventType.ON_GAME_STARTED, true);
         EventManager.Invoke(EventType.ON_GAME_STARTED);
     }
 
     public void NewGame() {
-        EventManager<EncounterSO>.Invoke(EventType.ON_GAME_STARTED, StartEncounter);
+        EventManager<QuestSO>.Invoke(EventType.SET_QUEST, StartQuest);
         EventManager<bool>.Invoke(EventType.ON_GAME_STARTED, true);
         EventManager.Invoke(EventType.ON_GAME_STARTED);
     }

@@ -64,10 +64,13 @@ public class DisplayEncounter : MonoBehaviour {
         actionQueue.Enqueue(new WaitAction(.2f));
         actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, ForegroundStandardTransform.position, "ForegroundHit", .2f));
         actionQueue.Enqueue(new WaitAction(.2f));
-        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
-        actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
-        actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform.position, "PaperRoll", 0));
-        actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
+
+        if (encounter.options.Count > 0) {
+            actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayOptions, encounter));
+            actionQueue.Enqueue(new DoMethodAction<EncounterSO>(DisplayTitle, encounter));
+            actionQueue.Enqueue(new MoveObjectAction(encounterCanvas.gameObject, 10, CanvasStandardTransform.position, "PaperRoll", 0));
+            actionQueue.Enqueue(new WaitForCallAction(EventType.NEXT_ACTION));
+        }
     }
 
     public void PartTwo(Option PickedOption) {
