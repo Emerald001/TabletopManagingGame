@@ -1,39 +1,42 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
-{
-    public static GameManager instance;
+public class GameManager : Singleton<GameManager> {
+    [SerializeField] private Option startingResources;
 
-    public GameManager() {
-        instance = this;
-    }
+    [SerializeField] private QuestSO currentQuest;
 
-    public Option startingResources;
+    [SerializeField] private ResourceManager Rmanager;
+    [SerializeField] private MapBehaviorManager Mmanager;
+    [SerializeField] private AudioManager Amanager;
+    [SerializeField] private QuestManager Qmanager;
+    [SerializeField] private DisplayEncounter EncounterDisplay;
 
-    public QuestSO currentQuest;
-
-    public ResourceManager Rmanager;
-    public CaravanWalk Mmanager;
-    public AudioManager Amanager;
-    public QuestManager Qmanager;
-    public DisplayEncounter EncounterDisplay;
+    public ResourceManager ResourceManager => Rmanager;
+    public MapBehaviorManager MapManager => Mmanager;
+    public AudioManager AudioManager => Amanager;
+    public QuestManager QuestManager => Qmanager;
+    public DisplayEncounter DisplayEncounter => EncounterDisplay;
 
     private EncounterSO currentEncounter;
 
     private void OnEnable() {
-        EventManager<EncounterSO>.Subscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
-        EventManager.Subscribe(EventType.ON_GAME_STARTED, Init);
-        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
+        EventManager<CaravanEventType, EncounterSO>.Subscribe(CaravanEventType.ON_ENCOUNTER_STARTED, SetEncounter);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_STARTED, Setup);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_ENCOUNTER_ENDED, ResetEncounter);
 
-        EventManager.Subscribe(EventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
     }
 
     private void OnDisable() {
-        EventManager<EncounterSO>.Unsubscribe(EventType.ON_ENCOUNTER_STARTED, SetEncounter);
-        EventManager.Unsubscribe(EventType.ON_GAME_STARTED, Init);
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetEncounter);
+        EventManager<CaravanEventType, EncounterSO>.Unsubscribe(CaravanEventType.ON_ENCOUNTER_STARTED, SetEncounter);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_STARTED, Setup);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_ENCOUNTER_ENDED, ResetEncounter);
 
-        EventManager.Unsubscribe(EventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.DO_GAME_OVER, () => Debug.Log("Game Over"));
+    }
+
+    private void Awake() {
+        Init(this);
     }
 
     void Start() {
@@ -42,28 +45,28 @@ public class GameManager : MonoBehaviour
         Amanager.PlayLoopedAudio("BackgroundMusic", true);
     }
 
-    public void Init() {
+    private void Setup() {
         Rmanager.AddResources(startingResources);
     }
 
-    void Update() {
+    private void Update() {
         if (Input.GetKeyDown(KeyCode.R))
-            EventManager.Invoke(EventType.DO_SCREENSHAKE);
+            EventManager<CaravanEventType>.Invoke(CaravanEventType.DO_SCREENSHAKE);
 
         if (Input.GetKeyDown(KeyCode.H))
-            EventManager<QuestSO>.Invoke(EventType.SET_QUEST, currentQuest);
+            EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.SET_QUEST, currentQuest);
 
-        for (int i = 0; i < EncounterDisplay.buttons.Count; i++) {
-            if (EncounterDisplay.buttons[i].GetComponent<OnButtonHover>().ShowResources)
+        for (int i = 0; i < EncounterDisplay.Buttons.Count; i++) {
+            if (EncounterDisplay.Buttons[i].GetComponent<OnButtonHover>().ShowResources)
                 Rmanager.ShowResources(currentEncounter.options[i]);
         }
     }
 
-    public void SetEncounter(EncounterSO encounter) {
+    private void SetEncounter(EncounterSO encounter) {
         currentEncounter = encounter;
     }
 
-    public void ResetEncounter() {
+    private void ResetEncounter() {
         currentEncounter = null;
     }
 }

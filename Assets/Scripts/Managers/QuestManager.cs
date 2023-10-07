@@ -2,30 +2,31 @@ using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
-    public QuestHolder QuestHolder;
+    [SerializeField] private QuestHolder QuestHolder;
+
     private QuestSO currentQuest;
 
-    public void OnEnable() {
-        EventManager<QuestSO>.Subscribe(EventType.SET_QUEST, DisplayQuest);
+    private void OnEnable() {
+        EventManager<CaravanEventType, QuestSO>.Subscribe(CaravanEventType.SET_QUEST, DisplayQuest);
     }
-    public void OnDisable() {
-        EventManager<QuestSO>.Unsubscribe(EventType.SET_QUEST, DisplayQuest);
+    private void OnDisable() {
+        EventManager<CaravanEventType, QuestSO>.Unsubscribe(CaravanEventType.SET_QUEST, DisplayQuest);
     }
 
-    public void DisplayQuest(QuestSO quest) {
+    private void DisplayQuest(QuestSO quest) {
         currentQuest = quest;
 
         QuestHolder.SetQuestInfo(quest);
         QuestHolder.SetGoal(0, currentQuest.goal);
 
-        EventManager<AreaSO>.Invoke(EventType.SET_AREA, currentQuest.area);
+        EventManager<CaravanEventType, AreaSO>.Invoke(CaravanEventType.SET_AREA, currentQuest.area);
     }
 
-    public void GetQuest() {
-        EventManager<AreaSO>.Invoke(EventType.SET_AREA, currentQuest.area);
+    private void GetQuest() {
+        EventManager<CaravanEventType, AreaSO>.Invoke(CaravanEventType.SET_AREA, currentQuest.area);
     }
 
-    public void HandInQuest() {
+    private void HandInQuest() {
 
     }
 }

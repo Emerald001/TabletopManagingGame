@@ -1,22 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class OnButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
-{
-    [HideInInspector] public bool ShowResources = false;
+public class OnButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+    public bool ShowResources { get; private set; } = false;
     private Button button;
 
-    public void Start() {
+    private void Start() {
         button = GetComponent<Button>();
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        if(button.interactable)
+        if (button.interactable)
             ShowResources = true;
     }
+
     public void OnPointerExit(PointerEventData eventData) {
         ShowResources = false;
     }

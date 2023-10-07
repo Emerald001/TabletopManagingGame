@@ -1,95 +1,92 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraPositionSet : MonoBehaviour
-{
-    public Transform MainPos;
-    public Transform CaravanPos;
-    public Transform ResourcePos;
-    public Transform MainMenuPos;
-    public Transform QuestPos;
-    public Vector3 CardRot;
+public class CameraPositionSet : MonoBehaviour {
+    [SerializeField] private Transform mainPos;
+    [SerializeField] private Transform caravanPos;
+    [SerializeField] private Transform resourcePos;
+    [SerializeField] private Transform mainMenuPos;
+    [SerializeField] private Transform questPos;
+    [SerializeField] private Vector3 cardRot;
 
-    public float cameraMoveSpeed;
+    [SerializeField] private float cameraMoveSpeed;
 
-    private Transform CurrentPos;
-    private Transform Maincam;
+    private Transform currentPos;
+    private Transform maincam;
 
-    private bool InMainMenu;
+    private bool inMainMenu;
 
     private void OnEnable() {
-        EventManager.Subscribe(EventType.ON_GAME_STARTED, SetInGame);
-        EventManager.Subscribe(EventType.ON_GAME_PAUSED, MainMenu);
-        EventManager.Subscribe(EventType.ON_GAME_UNPAUSED, SetInGame);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_STARTED, SetInGame);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_PAUSED, MainMenu);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_UNPAUSED, SetInGame);
     }
     private void OnDisable() {
-        EventManager.Unsubscribe(EventType.ON_GAME_STARTED, SetInGame);
-        EventManager.Unsubscribe(EventType.ON_GAME_PAUSED, MainMenu);
-        EventManager.Unsubscribe(EventType.ON_GAME_UNPAUSED, SetInGame);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_STARTED, SetInGame);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_PAUSED, MainMenu);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_UNPAUSED, SetInGame);
     }
 
     private void Start() {
-        Maincam = Camera.main.transform;
+        maincam = Camera.main.transform;
 
-        CurrentPos = MainPos;
+        currentPos = mainPos;
 
         MainMenu();
     }
 
-    void Update() {
-        if (!InMainMenu)
+    private void Update() {
+        if (!inMainMenu)
             Ingame();
 
-        Maincam.position = Vector3.MoveTowards(Maincam.position, CurrentPos.position, cameraMoveSpeed * Time.deltaTime);
-        Maincam.eulerAngles = Vector3.MoveTowards(Maincam.eulerAngles, CurrentPos.eulerAngles, cameraMoveSpeed * 15 * Time.deltaTime);
+        maincam.position = Vector3.MoveTowards(maincam.position, currentPos.position, cameraMoveSpeed * Time.deltaTime);
+        maincam.eulerAngles = Vector3.MoveTowards(maincam.eulerAngles, currentPos.eulerAngles, cameraMoveSpeed * 15 * Time.deltaTime);
     }
 
-    public void MainMenu() {
-        InMainMenu = true;
+    private void MainMenu() {
+        inMainMenu = true;
 
-        CurrentPos = MainMenuPos;
+        currentPos = mainMenuPos;
     }
 
-    public void SetInGame() {
-        InMainMenu = false;
+    private void SetInGame() {
+        inMainMenu = false;
 
-        CurrentPos = MainPos;
+        currentPos = mainPos;
     }
 
-    public void Ingame() {
+    private void Ingame() {
         if (Input.GetKeyDown(KeyCode.W) || Input.GetAxisRaw("Mouse ScrollWheel") > 0) {
-            if (CurrentPos == MainPos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = CaravanPos;
+            if (currentPos == mainPos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = caravanPos;
             }
-            else if (CurrentPos == CaravanPos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = ResourcePos;
+            else if (currentPos == caravanPos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = resourcePos;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.S) || Input.GetAxisRaw("Mouse ScrollWheel") < 0) {
-            if (CurrentPos == CaravanPos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = MainPos;
+            if (currentPos == caravanPos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = mainPos;
             }
-            else if (CurrentPos == ResourcePos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = CaravanPos;
+            else if (currentPos == resourcePos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = caravanPos;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.A)) {
-            if (CurrentPos == CaravanPos || CurrentPos == MainPos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = QuestPos;
+            if (currentPos == caravanPos || currentPos == mainPos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = questPos;
             }
         }
         if (Input.GetKeyDown(KeyCode.D)) {
-            if (CurrentPos == QuestPos) {
-                GameManager.instance.Amanager.PlayAudio("QuickTransition");
-                CurrentPos = MainPos;
+            if (currentPos == questPos) {
+                GameManager.Instance.AudioManager.PlayAudio("QuickTransition");
+                currentPos = mainPos;
             }
         }
     }

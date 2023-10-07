@@ -9,7 +9,7 @@ public class StartingArea : MonoBehaviour
 
     public List<HoverOverHouse> houses;
 
-    private ActionManager actionManager;
+    private ActionQueue actionManager;
     private bool CanInvoke = true;
 
     private GameObject currentCanvas;
@@ -33,10 +33,10 @@ public class StartingArea : MonoBehaviour
     }
 
     public void ClickOnHouse(HoverOverHouse house) {
-        if (currentCanvas) 
-            actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, UpperPos, "Swish"));
+        //if (currentCanvas) 
+        //    actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, UpperPos, "Swish"));
 
-        actionManager.Enqueue(new DoMethodAction(() => currentCanvas = house.HouseCanvas ));
-        actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, transform, "Swish"));
+        //actionManager.Enqueue(new DoMethodAction(() => currentCanvas = house.HouseCanvas ));
+        //actionManager.Enqueue(new MoveObjectAction(currentCanvas, 10, transform, "Swish"));
     }
 }

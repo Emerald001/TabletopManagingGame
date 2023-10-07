@@ -3,19 +3,21 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AreaData")]
-public class AreaSO : ScriptableObject
-{
+public class AreaSO : ScriptableObject {
+    [Header("References")]
     public string Name;
-    public Color AmbientLightColor;
+    public string EncounterFolderName;
 
+    [Space(10)]
+    public Color AmbientLightColor;
+    public GameObject MapPrefab;
     public List<GameObject> ForegroundPrefabs = new();
     public List<GameObject> BackgroundPrefabs = new();
 
-    public string EncounterFolderName;
 
     private List<EncounterSO> possibleEncounters = null;
     public List<EncounterSO> PossibleEncounters {
-        get { 
+        get {
             if (possibleEncounters == null) {
                 List<EncounterSO> list = new(Resources.LoadAll<EncounterSO>($"Encounters/{EncounterFolderName}/"));
                 possibleEncounters = list.OrderBy(x => x.Rarity).ToList();

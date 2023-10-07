@@ -1,37 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuFunctionality : MonoBehaviour
 {
     [Header("Toggle Menus")]
-    public QuestSO StartQuest;
-    public GameObject SettingsToggle;
-    public GameObject MainMenuToggle;
-    public GameObject PauseMenuToggle;
+    [SerializeField] private QuestSO StartQuest;
+    [SerializeField] private GameObject SettingsToggle;
+    [SerializeField] private GameObject MainMenuToggle;
+    [SerializeField] private GameObject PauseMenuToggle;
 
-    public Transform MainStandardPos;
-    public Transform MainHiddenPos;
-    public Transform MainSidePos;
-    public Transform SettingHiddenPos;
-    public Transform SettingStandardPos;
-
-    public bool SettingsMenuCurrentlyActive = false;
-    public bool PauseMenuCurrentlyActive = false;
+    [SerializeField] private Transform MainStandardPos;
+    [SerializeField] private Transform MainHiddenPos;
+    [SerializeField] private Transform MainSidePos;
+    [SerializeField] private Transform SettingHiddenPos;
+    [SerializeField] private Transform SettingStandardPos;
 
     [Header("Fullscreen Settings")]
-    public GameObject Check;
-    public bool isFullscreen = false;
+    [SerializeField] private GameObject Check;
 
-    private ActionManager actionManager;
-    private bool CanInvoke = true;
-    public bool CanPause = false;
+    private ActionQueue actionManager;
+
+    private bool settingsMenuCurrentlyActive;
+    private bool pauseMenuCurrentlyActive;
+    private bool isFullscreen;
+    private bool canPause;
+    private bool canInvoke = true;
 
     private void OnEnable() {
-        EventManager.Subscribe(EventType.ON_GAME_STARTED, HideMenu);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_STARTED, HideMenu);
     }
     private void OnDisable() {
-        EventManager.Unsubscribe(EventType.ON_GAME_STARTED, HideMenu);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_STARTED, HideMenu);
     }
 
     private void Start() {
@@ -45,30 +43,56 @@ public class MenuFunctionality : MonoBehaviour
             TogglePauseMenu();    
     }
 
-    public void OnEmptyQueue() {
-        CanInvoke = true;
+    private void OnEmptyQueue() {
+        canInvoke = true;
     }
 
-    public void Continue() {
-        EventManager<QuestSO>.Invoke(EventType.ON_GAME_STARTED, StartQuest);
-        EventManager<bool>.Invoke(EventType.ON_GAME_STARTED, true);
-        EventManager.Invoke(EventType.ON_GAME_STARTED);
-    }
-
-    public void NewGame() {
-        EventManager<QuestSO>.Invoke(EventType.SET_QUEST, StartQuest);
-        EventManager<bool>.Invoke(EventType.ON_GAME_STARTED, true);
-        EventManager.Invoke(EventType.ON_GAME_STARTED);
-    }
-
-    public void ToggleSettingsMenu(GameObject menu) {
-        if (!CanInvoke)
+    private void TogglePauseMenu() {
+        if (!canInvoke || !canPause)
             return;
 
-        CanInvoke = false;
-        SettingsMenuCurrentlyActive = !SettingsMenuCurrentlyActive;
+        canInvoke = false;
+        pauseMenuCurrentlyActive = !pauseMenuCurrentlyActive;
 
-        if (SettingsMenuCurrentlyActive) {
+        if (pauseMenuCurrentlyActive) {
+            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainStandardPos));
+            EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_PAUSED);
+            EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_PAUSED, false);
+        }
+        else {
+            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainHiddenPos));
+            EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_UNPAUSED);
+            EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_UNPAUSED, true);
+        }
+    }
+
+    private void HideMenu() {
+        actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
+        actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainHiddenPos));
+
+        canPause = true;
+    }
+
+    public void Btn_Continue() {
+        EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.ON_GAME_STARTED, StartQuest);
+        EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_STARTED, true);
+        EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_STARTED);
+    }
+
+    public void Btn_NewGame() {
+        EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.SET_QUEST, StartQuest);
+        EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_STARTED, true);
+        EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_STARTED);
+    }
+
+    public void Btn_ToggleSettingsMenu(GameObject menu) {
+        if (!canInvoke)
+            return;
+
+        canInvoke = false;
+        settingsMenuCurrentlyActive = !settingsMenuCurrentlyActive;
+
+        if (settingsMenuCurrentlyActive) {
             actionManager.Enqueue(new MoveObjectAction(menu, 10000, MainSidePos));
             actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingStandardPos));
         }
@@ -78,41 +102,15 @@ public class MenuFunctionality : MonoBehaviour
         }
     }
 
-    public void TogglePauseMenu() {
-        if (!CanInvoke || !CanPause)
-            return;
-
-        CanInvoke = false;
-        PauseMenuCurrentlyActive = !PauseMenuCurrentlyActive;
-
-        if (PauseMenuCurrentlyActive) {
-            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainStandardPos));
-            EventManager.Invoke(EventType.ON_GAME_PAUSED);
-            EventManager<bool>.Invoke(EventType.ON_GAME_PAUSED, false);
-        }
-        else {
-            actionManager.Enqueue(new MoveObjectAction(PauseMenuToggle, 10000, MainHiddenPos));
-            EventManager.Invoke(EventType.ON_GAME_UNPAUSED);
-            EventManager<bool>.Invoke(EventType.ON_GAME_UNPAUSED, true);
-        }
-    }
-
-    public void ToggleFullscreen() {
-        isFullscreen = !isFullscreen;
-
-        Check.SetActive(isFullscreen);
-    }
-
-    public void HideMenu() {
-        actionManager.Enqueue(new MoveObjectAction(SettingsToggle, 10000, SettingHiddenPos));
-        actionManager.Enqueue(new MoveObjectAction(MainMenuToggle, 10000, MainHiddenPos));
-
-        CanPause = true;
-    }
-
-    public void Quit() {
+    public void Btn_Quit() {
         Application.Quit();
 
         Debug.Log("Quit");
+    }
+
+    public void Btn_ToggleFullscreen() {
+        isFullscreen = !isFullscreen;
+
+        Check.SetActive(isFullscreen);
     }
 }

@@ -4,13 +4,13 @@ using TMPro;
 
 public class QuestHolder : MonoBehaviour
 {
-    public Image Icon;
+    [SerializeField] private Image Icon;
 
-    public TextMeshProUGUI Name;
-    public TextMeshProUGUI Discription;
-    public TextMeshProUGUI GoalReason;
-    public TextMeshProUGUI Goal;
-    public TextMeshProUGUI ExtraRewards;
+    [SerializeField] private TextMeshProUGUI Name;
+    [SerializeField] private TextMeshProUGUI Discription;
+    [SerializeField] private TextMeshProUGUI GoalReason;
+    [SerializeField] private TextMeshProUGUI Goal;
+    [SerializeField] private TextMeshProUGUI ExtraRewards;
 
     public void SetQuestInfo(QuestSO quest) {
         Icon.sprite = quest.Icon;

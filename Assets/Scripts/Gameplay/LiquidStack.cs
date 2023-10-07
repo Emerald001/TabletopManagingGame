@@ -1,17 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class LiquidStack : MonoBehaviour
-{
-    public GameObject Resource;
+public class LiquidStack : MonoBehaviour {
+    [SerializeField] private GameObject Resource;
 
     [Range(0.01f, .45f)]
-    public float size = 0.01f;
-
-    private float targetHeight;
-
-    [HideInInspector] public float StackAmount;
+    [SerializeField] private float size = 0.01f;
+    [SerializeField] private float targetHeight;
 
     private void Update() {
         targetHeight = Mathf.Lerp(targetHeight, size, .5f * Time.deltaTime);
@@ -25,14 +19,14 @@ public class LiquidStack : MonoBehaviour
             size += amount / 100;
         else
             size = .45f;
-
-        StackAmount = size * 100;
     }
 
     public void RemoveLiquid(float amount) {
-        if(size > amount / 100)
+        if (size > amount / 100)
             size -= amount / 100;
+    }
 
-        StackAmount = size * 100;
+    public bool HasResource(float amount) {
+        return size >= amount;
     }
 }

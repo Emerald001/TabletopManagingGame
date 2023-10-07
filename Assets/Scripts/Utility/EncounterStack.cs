@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EncounterStack : MonoBehaviour
-{
+public class EncounterStack : MonoBehaviour {
     [Header("References")]
-    public QuestSO Village;
+    [SerializeField] private QuestSO Village;
 
-    public GameObject CardPrefab;
-    public Transform DisplayPos;
-    public Transform SlamDownPos;
-    public Transform EndCardPos;
+    [SerializeField] private GameObject CardPrefab;
+    [SerializeField] private Transform DisplayPos;
+    [SerializeField] private Transform SlamDownPos;
+    [SerializeField] private Transform EndCardPos;
 
-    public GameObject PastStack;
+    [SerializeField] private GameObject PastStack;
 
-    private List<GameObject> nextEncounters = new();
-    private List<GameObject> pastEncounters = new();
-    private List<Transform> nextEncountersTransforms = new();
+    private readonly List<GameObject> nextEncounters = new();
+    private readonly List<GameObject> pastEncounters = new();
+    private readonly List<Transform> nextEncountersTransforms = new();
 
     private AreaSO currentArea;
     private QuestSO currentQuest;
@@ -34,28 +33,28 @@ public class EncounterStack : MonoBehaviour
     private bool HoveringOldStack;
     private bool Displaying;
 
-    private ActionManager actionQueue;
+    private ActionQueue actionQueue;
 
     private void OnEnable() {
-        EventManager<QuestSO>.Subscribe(EventType.SET_QUEST, SetQuest);
-        EventManager.Subscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
+        EventManager<CaravanEventType, QuestSO>.Subscribe(CaravanEventType.SET_QUEST, SetQuest);
+        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
     }
     private void OnDisable() {
-        EventManager<QuestSO>.Unsubscribe(EventType.SET_QUEST, SetQuest);
-        EventManager.Unsubscribe(EventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
+        EventManager<CaravanEventType, QuestSO>.Unsubscribe(CaravanEventType.SET_QUEST, SetQuest);
+        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_ENCOUNTER_ENDED, ResetClickOnEncounterEnded);
     }
 
-    void Start() {
+    private void Start() {
         CurrentLiftedCardPos = new GameObject().transform;
         CurrentLiftedCardPos.SetParent(transform);
 
         actionQueue = new(EmptyQueue);
     }
 
-    void Update() {
+    private void Update() {
         actionQueue.OnUpdate();
 
-        if (!CanClick) 
+        if (!CanClick)
             return;
 
         if (Displaying) {
@@ -98,8 +97,8 @@ public class EncounterStack : MonoBehaviour
         if (HoveringOldStack && Input.GetKeyDown(KeyCode.Mouse0))
             StartCoroutine(DisplayCards());
     }
-    
-    public void CheckForHover() { 
+
+    private void CheckForHover() {
         Ray target = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(target, out var hit, 10000)) {
@@ -115,14 +114,14 @@ public class EncounterStack : MonoBehaviour
         }
     }
 
-    public void EmptyQueue() {
+    private void EmptyQueue() {
 
     }
 
-    public void SetNextCardActive() {
+    private void SetNextCardActive() {
         if (nextEncounters.Count < 1) {
             Debug.Log("No More Encounters, going back to village!");
-            EventManager<QuestSO>.Invoke(EventType.SET_QUEST, Village);
+            EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.SET_QUEST, Village);
         }
 
         CurrentCard = nextEncounters[^1].transform;
@@ -132,12 +131,12 @@ public class EncounterStack : MonoBehaviour
         CanClick = true;
     }
 
-    public void StartEncounter(EncounterSO encounter) {
+    private void StartEncounter(EncounterSO encounter) {
         Debug.Log(encounter);
 
-        GameManager.instance.Amanager.PlayAudio("CardGrab");
+        GameManager.Instance.AudioManager.PlayAudio("CardGrab");
 
-        EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, encounter);
+        EventManager<CaravanEventType, EncounterSO>.Invoke(CaravanEventType.ON_ENCOUNTER_STARTED, encounter);
 
         CurrentCard.GetChild(1).GetComponent<TextMeshPro>().text = encounter.name;
         CurrentCard.GetChild(0).GetComponent<SpriteRenderer>().sprite = encounter.Icon;
@@ -150,15 +149,16 @@ public class EncounterStack : MonoBehaviour
         CanClick = false;
     }
 
-    public void ResetClickOnEncounterEnded() {
+    private void ResetClickOnEncounterEnded() {
         actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, SlamDownPos));
         actionQueue.Enqueue(new WaitAction(.3f));
-        actionQueue.Enqueue(new DoMethodAction(() => GameManager.instance.Amanager.PlayAudio("CardSlam")));
-        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos, "", .3f));
+        actionQueue.Enqueue(new DoMethodAction(() => GameManager.Instance.AudioManager.PlayAudio("CardSlam")));
+        actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos));
+        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .3f)));
         actionQueue.Enqueue(new DoMethodAction(SetNextCardActive));
     }
 
-    public void SetQuest(QuestSO quest) {
+    private void SetQuest(QuestSO quest) {
         currentQuest = quest;
         currentArea = Instantiate(quest.area);
 
@@ -167,7 +167,7 @@ public class EncounterStack : MonoBehaviour
         SpawnAllCards();
     }
 
-    public void SpawnAllCards() {
+    private void SpawnAllCards() {
         Debug.Log(currentQuest.EncounterAmount);
         for (int i = 0; i < currentQuest.EncounterAmount; i++) {
 
@@ -179,7 +179,8 @@ public class EncounterStack : MonoBehaviour
             tmpTf.transform.position = transform.position + new Vector3(0, i * .01f + .01f, 0);
             tmpTf.transform.eulerAngles = transform.eulerAngles + new Vector3(0, Random.Range(-5, 5), 0);
 
-            actionQueue.Enqueue(new MoveObjectAction(card, 20f, tmpTf, "", .08f));
+            actionQueue.Enqueue(new MoveObjectAction(card, 20f, tmpTf));
+            actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .08f)));
 
             nextEncounters.Add(card);
             nextEncountersTransforms.Add(tmpTf);
@@ -188,7 +189,7 @@ public class EncounterStack : MonoBehaviour
         SetNextCardActive();
     }
 
-    public EncounterSO GetEncouterFromArea() {
+    private EncounterSO GetEncouterFromArea() {
         List<EncounterSO> list = currentQuest.ScriptedEncounters;
 
         if (list.Count < currentEncounterIndex)
@@ -230,7 +231,7 @@ public class EncounterStack : MonoBehaviour
     private IEnumerator DisplayCards(GameObject Card, Vector3 targetPos, Quaternion rotation) {
         while (Card.transform.position != targetPos) {
             Card.transform.SetPositionAndRotation(
-                Vector3.MoveTowards(Card.transform.position, targetPos, 25 * Time.deltaTime), 
+                Vector3.MoveTowards(Card.transform.position, targetPos, 25 * Time.deltaTime),
                 Quaternion.Lerp(Card.transform.rotation, rotation, 50 * Time.deltaTime));
 
             yield return new WaitForEndOfFrame();

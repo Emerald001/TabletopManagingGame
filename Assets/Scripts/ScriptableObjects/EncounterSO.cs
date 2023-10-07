@@ -31,7 +31,7 @@ public struct Option {
     public string Name;
     public string Description;
 
-    public EventType EventToCall;
+    public CaravanEventType EventToCall;
 
     [Header("Uses")]
     public int WoodUse;

@@ -1,46 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class BookInteract : MonoBehaviour
-{
-    public bool clickable;
+public class BookInteract : MonoBehaviour {
+    [SerializeField] private RectTransform book;
+    [SerializeField] private RectTransform InfoHolder;
 
-    public RectTransform book;
-    public RectTransform InfoHolder;
+    [SerializeField] private Transform StandardPos;
+    [SerializeField] private Transform LiftedPos;
+    [SerializeField] private Transform HiddenPos;
 
-    public Transform StandardPos;
-    public Transform LiftedPos;
-    public Transform HiddenPos;
+    [SerializeField] private RectTransform displayPos;
+    [SerializeField] private RectTransform hiddenPos;
 
-    public RectTransform displayPos;
-    public RectTransform hiddenPos;
+    private readonly List<GameObject> allInfoBits = new();
+    private int index = 0;
 
+    private bool clickable;
     private bool hovering;
     private bool displaying;
 
-    private List<GameObject> allInfoBits = new();
-    private int index = 0;
-
     private void OnEnable() {
-        EventManager<bool>.Subscribe(EventType.ON_GAME_STARTED, SetInteractable);
-        EventManager<bool>.Subscribe(EventType.ON_GAME_PAUSED, SetInteractable);
-        EventManager<bool>.Subscribe(EventType.ON_GAME_UNPAUSED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Subscribe(CaravanEventType.ON_GAME_STARTED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Subscribe(CaravanEventType.ON_GAME_PAUSED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Subscribe(CaravanEventType.ON_GAME_UNPAUSED, SetInteractable);
     }
     private void OnDisable() {
-        EventManager<bool>.Unsubscribe(EventType.ON_GAME_STARTED, SetInteractable);
-        EventManager<bool>.Unsubscribe(EventType.ON_GAME_PAUSED, SetInteractable);
-        EventManager<bool>.Unsubscribe(EventType.ON_GAME_UNPAUSED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Unsubscribe(CaravanEventType.ON_GAME_STARTED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Unsubscribe(CaravanEventType.ON_GAME_PAUSED, SetInteractable);
+        EventManager<CaravanEventType, bool>.Unsubscribe(CaravanEventType.ON_GAME_UNPAUSED, SetInteractable);
     }
 
     private void Start() {
-        for (int i = 0; i < InfoHolder.childCount; i++) {
+        for (int i = 0; i < InfoHolder.childCount; i++)
             allInfoBits.Add(InfoHolder.GetChild(i).gameObject);
-        }
     }
 
-    void Update() {
+    private void Update() {
         CheckForHover();
 
         if (displaying || !clickable)
@@ -55,42 +51,26 @@ public class BookInteract : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, StandardPos.rotation, 40 * Time.deltaTime);
         }
 
-        if (hovering && Input.GetKeyDown(KeyCode.Mouse0)) {
+        if (hovering && Input.GetKeyDown(KeyCode.Mouse0))
             Switch();
-        }
     }
 
-    public void SetInteractable(bool bl) => clickable = bl;
+    private void SetInteractable(bool bl) => clickable = bl;
 
-    public void Switch() {
-
+    private void Switch() {
         if (displaying) {
             StartCoroutine(ActivateBook(hiddenPos, StandardPos.position));
-            GameManager.instance.Amanager.PlayAudio("BookClose");
+            GameManager.Instance.AudioManager.PlayAudio("BookClose");
         }
         else {
             StartCoroutine(ActivateBook(displayPos, HiddenPos.position));
-            GameManager.instance.Amanager.PlayAudio("BookOpen");
+            GameManager.Instance.AudioManager.PlayAudio("BookOpen");
         }
 
         displaying = !displaying;
     }
 
-    public void NextInfoBit(int dir) {
-        allInfoBits[index].SetActive(false);
-
-        GameManager.instance.Amanager.PlayAudio("PageTurn");
-
-        index += dir;
-        if (index > allInfoBits.Count - 1)
-            index = 0;
-        else if (index < 0)
-            index = allInfoBits.Count - 1;
-
-        allInfoBits[index].SetActive(true);
-    }
-
-    public void CheckForHover() {
+    private void CheckForHover() {
         Ray target = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(target, out var hit, 10000)) {
@@ -101,14 +81,28 @@ public class BookInteract : MonoBehaviour
         }
     }
 
-    public IEnumerator ActivateBook(RectTransform targetPos, Vector3 bookTarget) {
-        EventManager<float>.Invoke(EventType.DO_SCREENSHAKE, .05f);
+    private IEnumerator ActivateBook(RectTransform targetPos, Vector3 bookTarget) {
+        EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .05f);
 
         while (book.position != targetPos.position) {
             book.position = Vector2.MoveTowards(book.position, targetPos.position, 5000 * Time.deltaTime);
             transform.position = Vector3.MoveTowards(transform.position, bookTarget, 10 * Time.deltaTime);
-            
+
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    public void Btn_NextInfoBit(int dir) {
+        allInfoBits[index].SetActive(false);
+
+        GameManager.Instance.AudioManager.PlayAudio("PageTurn");
+
+        index += dir;
+        if (index > allInfoBits.Count - 1)
+            index = 0;
+        else if (index < 0)
+            index = allInfoBits.Count - 1;
+
+        allInfoBits[index].SetActive(true);
     }
 }

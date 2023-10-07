@@ -1,21 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
-{
-    public ResourceStack WoodStack;
-    public ResourceStack MeatStack;
-    public ResourceStack GoldStack;
+public class ResourceManager : MonoBehaviour {
+    [SerializeField] private ResourceStack WoodStack;
+    [SerializeField] private ResourceStack MeatStack;
+    [SerializeField] private ResourceStack GoldStack;
 
-    public LiquidStack WaterStack;
-
-    public bool HasResources(int wood, int meat, int gold, float water) {
-        if (WoodStack.StackAmount < wood || MeatStack.StackAmount < meat || GoldStack.StackAmount < gold)
-            return false;
-
-        return true;
-    }
+    [SerializeField] private LiquidStack WaterStack;
 
     public void AddResources(Option ID) {
         if (ID.Woodgive < 0)
@@ -40,7 +30,8 @@ public class ResourceManager : MonoBehaviour
     }
 
     public void ShowResources(Option ID) {
-        if(HasResources(ID.WoodUse, ID.MeatUse, ID.GoldUse, 0))
+        if (!HasResources(ID.WoodUse, ID.MeatUse, ID.GoldUse, 0))
+            return;
 
         WoodStack.ShowItems(ID.WoodUse);
         MeatStack.ShowItems(ID.MeatUse);
@@ -53,5 +44,15 @@ public class ResourceManager : MonoBehaviour
         StartCoroutine(GoldStack.RemoveItem(ID.GoldUse));
 
         WaterStack.RemoveLiquid(ID.WaterUse);
+    }
+
+    public bool HasResources(int wood, int meat, int gold, float water) {
+        if (WoodStack.HasResource(wood) || 
+            MeatStack.HasResource(meat) || 
+            GoldStack.HasResource(gold) || 
+            WaterStack.HasResource(water))
+            return false;
+
+        return true;
     }
 }

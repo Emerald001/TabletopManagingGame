@@ -6,6 +6,6 @@ public class SetEncounter : MonoBehaviour
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.L)) 
-            EventManager<EncounterSO>.Invoke(EventType.ON_ENCOUNTER_STARTED, setEncounter);
+            EventManager<CaravanEventType, EncounterSO>.Invoke(CaravanEventType.ON_ENCOUNTER_STARTED, setEncounter);
     }
 }
