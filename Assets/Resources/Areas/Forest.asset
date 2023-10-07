@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   Name: Forest
+  EncounterFolderName: Forest
   AmbientLightColor: {r: 1, g: 0.9089272, b: 0.7122642, a: 0}
+  MapPrefab: {fileID: 0}
   ForegroundPrefabs:
   - {fileID: 4873360489531572405, guid: f504af99dcb8f0846a0188674a8768d9, type: 3}
   BackgroundPrefabs:
   - {fileID: 2673394923812846789, guid: 8a865b93085d44244a1769054e5d659c, type: 3}
-  EncounterFolderName: Forest
-  EncounterAmount: 10
-  ScriptedEncounters: []
+  movementSpeed: 50
+  maxObstacleAmount: 50
+  timerModifier: 1.7
+  spawnChance: 10

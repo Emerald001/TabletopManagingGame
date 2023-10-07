@@ -14,6 +14,12 @@ public class AreaSO : ScriptableObject {
     public List<GameObject> ForegroundPrefabs = new();
     public List<GameObject> BackgroundPrefabs = new();
 
+    [Header("Settings")]
+    [Range(0f, 100f)]
+    public float movementSpeed;
+    public float maxObstacleAmount;
+    public float timerModifier;
+    public float spawnChance;
 
     private List<EncounterSO> possibleEncounters = null;
     public List<EncounterSO> PossibleEncounters {

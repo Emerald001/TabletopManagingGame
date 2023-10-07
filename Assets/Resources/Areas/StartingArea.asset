@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: StartingArea
   m_EditorClassIdentifier: 
   Name: Starting Forest
+  EncounterFolderName: '-'
   AmbientLightColor: {r: 0.46589005, g: 1, b: 0.13679248, a: 1}
+  MapPrefab: {fileID: 0}
   ForegroundPrefabs:
   - {fileID: 4873360489531572405, guid: f504af99dcb8f0846a0188674a8768d9, type: 3}
   BackgroundPrefabs:
   - {fileID: 8324220039263980619, guid: 5dfd96d36213946448b4697aa3d88791, type: 3}
   - {fileID: 7915226518580399985, guid: 69f37ab2beaa9d540a35890cd65c6c2b, type: 3}
   - {fileID: 295035011408198110, guid: 32e7ba4230888ac4199076668bc692d8, type: 3}
-  EncounterFolderName: '-'
-  ScriptedEncounters:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  movementSpeed: 50
+  maxObstacleAmount: 50
+  timerModifier: 1.7
+  spawnChance: 10
