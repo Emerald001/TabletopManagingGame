@@ -402,27 +402,6 @@ MonoBehaviour:
   caravanPrefab: {fileID: 4059442301515690372, guid: 264476b4b1cea5a4b82694fe358b5410, type: 3}
   horsePrefab: {fileID: 5870066832978470687, guid: 870336c42f7a62e4ba0d622b65457001, type: 3}
   objectParent: {fileID: 1776885395}
-  Surroundings:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   beginning: {fileID: 603796659}
   end: {fileID: 826121616}
   mapUnrollSequence: {fileID: 21464610}
@@ -1379,7 +1358,6 @@ MonoBehaviour:
     Meatgive: 5
     Goldgive: 5
     WaterGive: 20
-  currentQuest: {fileID: 11400000, guid: c73d763b153db7342a6753c5fbafce47, type: 2}
   Rmanager: {fileID: 161689662}
   Mmanager: {fileID: 21464608}
   Amanager: {fileID: 161689664}
