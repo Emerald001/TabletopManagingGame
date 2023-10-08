@@ -2,8 +2,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : Singleton<InventoryManager>
 {
+    public InventoryData RunInventory { get; private set; } = new();
+
+    private void Awake() {
+        Init(this);
+    }
+
     public InventoryData GetCurrentlySelectedInventory() {
         return new InventoryData();
     }
@@ -11,9 +17,9 @@ public class InventoryManager : MonoBehaviour
 
 [Serializable]
 public class InventoryData {
-    public List<HorseData> HorseDatas;
-    public List<ManData> ManDatas;
-    public List<CaravanData> CaravanDatas;
+    public List<HorseData> HorseDatas = new();
+    public List<ManData> ManDatas = new();
+    public List<CaravanData> CaravanDatas = new();
 }
 
 public class HorseData {

@@ -11,6 +11,7 @@ public class AreaSO : ScriptableObject {
     [Space(10)]
     public Color AmbientLightColor;
     public GameObject MapPrefab;
+    public GameObject MapRollPrefab;
     public List<GameObject> ForegroundPrefabs = new();
     public List<GameObject> BackgroundPrefabs = new();
 

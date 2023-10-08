@@ -15,7 +15,8 @@ MonoBehaviour:
   Name: Starting Forest
   EncounterFolderName: '-'
   AmbientLightColor: {r: 0.46589005, g: 1, b: 0.13679248, a: 1}
-  MapPrefab: {fileID: 0}
+  MapPrefab: {fileID: 1009583943112938893, guid: b871b53bbd2b151498c3b1b50b6b5d4c, type: 3}
+  MapRollPrefab: {fileID: 1009583943112938893, guid: b871b53bbd2b151498c3b1b50b6b5d4c, type: 3}
   ForegroundPrefabs:
   - {fileID: 4873360489531572405, guid: f504af99dcb8f0846a0188674a8768d9, type: 3}
   BackgroundPrefabs:
