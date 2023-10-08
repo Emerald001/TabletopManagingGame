@@ -18,7 +18,7 @@ public class DisplayEncounter : MonoBehaviour {
     [SerializeField] private Color standardCandleColors;
     [SerializeField] private List<Light> candleLights;
 
-    public List<GameObject> Buttons { get; private set; }
+    public List<GameObject> Buttons { get; private set; } = new();
 
     private GameObject currentBackground;
     private GameObject currentSurrouning;

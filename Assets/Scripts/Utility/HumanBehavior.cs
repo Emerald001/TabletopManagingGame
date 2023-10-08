@@ -9,7 +9,6 @@ public class HumanBehavior : MonoBehaviour {
     [SerializeField] private Transform End;
 
     [SerializeField] private MapBehaviorManager CaravanWalk;
-    [SerializeField] private AnimationCurve wobble;
 
     private readonly List<GameObject> currentTeam = new();
     private bool encounterActive;

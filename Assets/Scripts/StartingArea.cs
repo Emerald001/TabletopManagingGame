@@ -10,7 +10,7 @@ public class StartingArea : MonoBehaviour
     public List<HoverOverHouse> houses;
 
     private ActionQueue actionManager;
-    private bool CanInvoke = true;
+    //private bool CanInvoke = true;
 
     private GameObject currentCanvas;
 
@@ -29,7 +29,7 @@ public class StartingArea : MonoBehaviour
     }
 
     public void EndQueue() {
-        CanInvoke = true;
+        //CanInvoke = true;
     }
 
     public void ClickOnHouse(HoverOverHouse house) {

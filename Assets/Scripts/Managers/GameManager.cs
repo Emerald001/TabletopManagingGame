@@ -3,8 +3,6 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager> {
     [SerializeField] private Option startingResources;
 
-    [SerializeField] private QuestSO currentQuest;
-
     [SerializeField] private ResourceManager Rmanager;
     [SerializeField] private MapBehaviorManager Mmanager;
     [SerializeField] private AudioManager Amanager;
@@ -39,7 +37,7 @@ public class GameManager : Singleton<GameManager> {
         Init(this);
     }
 
-    void Start() {
+    private void Start() {
         Amanager.Init();
 
         Amanager.PlayLoopedAudio("BackgroundMusic", true);
@@ -50,12 +48,6 @@ public class GameManager : Singleton<GameManager> {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.R))
-            EventManager<CaravanEventType>.Invoke(CaravanEventType.DO_SCREENSHAKE);
-
-        if (Input.GetKeyDown(KeyCode.H))
-            EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.SET_QUEST, currentQuest);
-
         for (int i = 0; i < EncounterDisplay.Buttons.Count; i++) {
             if (EncounterDisplay.Buttons[i].GetComponent<OnButtonHover>().ShowResources)
                 Rmanager.ShowResources(currentEncounter.options[i]);
