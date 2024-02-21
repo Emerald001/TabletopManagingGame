@@ -25,13 +25,6 @@ public class MenuFunctionality : MonoBehaviour
     private bool canPause;
     private bool canInvoke = true;
 
-    private void OnEnable() {
-        EventManager<CaravanEventType>.Subscribe(CaravanEventType.ON_GAME_STARTED, HideMenu);
-    }
-    private void OnDisable() {
-        EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_GAME_STARTED, HideMenu);
-    }
-
     private void Start() {
         actionManager = new(OnEmptyQueue);
     }
@@ -77,12 +70,16 @@ public class MenuFunctionality : MonoBehaviour
         EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.ON_GAME_STARTED, StartQuest);
         EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_STARTED, true);
         EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_STARTED);
+
+        HideMenu();
     }
 
     public void Btn_NewGame() {
         EventManager<CaravanEventType, QuestSO>.Invoke(CaravanEventType.SET_QUEST, StartQuest);
         EventManager<CaravanEventType, bool>.Invoke(CaravanEventType.ON_GAME_STARTED, true);
         EventManager<CaravanEventType>.Invoke(CaravanEventType.ON_GAME_STARTED);
+
+        HideMenu();
     }
 
     public void Btn_ToggleSettingsMenu(GameObject menu) {

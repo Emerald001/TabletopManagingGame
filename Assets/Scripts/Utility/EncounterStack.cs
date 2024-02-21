@@ -132,8 +132,6 @@ public class EncounterStack : MonoBehaviour {
     }
 
     private void StartEncounter(EncounterSO encounter) {
-        Debug.Log(encounter);
-
         GameManager.Instance.AudioManager.PlayAudio("CardGrab");
 
         EventManager<CaravanEventType, EncounterSO>.Invoke(CaravanEventType.ON_ENCOUNTER_STARTED, encounter);
@@ -168,9 +166,7 @@ public class EncounterStack : MonoBehaviour {
     }
 
     private void SpawnAllCards() {
-        Debug.Log(currentQuest.EncounterAmount);
         for (int i = 0; i < currentQuest.EncounterAmount; i++) {
-
             GameObject card = Instantiate(CardPrefab, transform);
             card.transform.position = transform.position + new Vector3(0, 3, 0);
 

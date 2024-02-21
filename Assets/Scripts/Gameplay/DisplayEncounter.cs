@@ -56,6 +56,7 @@ public class DisplayEncounter : MonoBehaviour {
         currentBackground = Instantiate(encounter.BackgroundPrefab, new Vector3(0, 10, 0), Quaternion.identity);
         currentSurrouning = Instantiate(encounter.SurroundingPrefab, new Vector3(0, 4, .5f), Quaternion.identity);
 
+        actionQueue.Enqueue(new WaitAction(.01f));
         actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
         actionQueue.Enqueue(new DoMethodAction(() => GameManager.Instance.AudioManager.PlayAudio("BackgroundHit")));
         actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, backgroundStandardTransform.position));

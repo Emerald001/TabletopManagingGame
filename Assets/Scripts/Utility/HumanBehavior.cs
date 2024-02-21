@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class HumanBehavior : MonoBehaviour {
     [SerializeField] private float walkspeed;
-    [SerializeField] private float menAmount;
     [SerializeField] private GameObject man;
     [SerializeField] private Transform End;
 
@@ -24,12 +23,7 @@ public class HumanBehavior : MonoBehaviour {
         EventManager<CaravanEventType>.Unsubscribe(CaravanEventType.ON_ENCOUNTER_ENDED, RemovedEncounter);
     }
 
-    void Start() {
-        for (int i = 0; i < menAmount; i++)
-            AddMan();
-    }
-
-    void Update() {
+    private void Update() {
         if (encounterActive)
             GatherAroundObstacle();
         else
@@ -50,7 +44,7 @@ public class HumanBehavior : MonoBehaviour {
         }
     }
 
-    public void AddedEncounter(EncounterSO encounter) {
+    private void AddedEncounter(EncounterSO encounter) {
         encounterActive = true;
 
         var tmpPos = CaravanWalk.CurrentObstacle.transform.position + new Vector3(.2f, 0, 0);
@@ -60,28 +54,28 @@ public class HumanBehavior : MonoBehaviour {
         }
     }
 
-    public void RemovedEncounter() {
+    private void RemovedEncounter() {
         encounterActive = false;
     }
 
-    public void AddMan() {
-        var tmp = Instantiate(man);
+    public void AddMan(GameObject manPrefab) {
+        var tmp = Instantiate(manPrefab);
         tmp.transform.position = new Vector3(0, 1.65f, -.35f);
 
         currentTeam.Add(tmp);
     }
 
-    public void RemoveMan() {
+    private void RemoveMan() {
         if (currentTeam.Count < 1)
             return;
 
-        var tmp = currentTeam[^1];
+        GameObject tmp = currentTeam[^1];
 
         currentTeam.Remove(tmp);
         Destroy(tmp);
     }
 
-    public IEnumerator WalkBack(GameObject dude, Vector3 targetPos) {
+    private IEnumerator WalkBack(GameObject dude, Vector3 targetPos) {
         currentTeam.Remove(dude);
         dude.GetComponent<Animator>().SetBool("Wobbling", true);
 
@@ -97,7 +91,7 @@ public class HumanBehavior : MonoBehaviour {
         dude.GetComponent<Animator>().SetBool("Wobbling", false);
     }
 
-    public void GatherAroundObstacle() {
+    private void GatherAroundObstacle() {
         Vector3 tmpPos;
         if (CaravanWalk.CurrentObstacle.transform.position.y < 1.7f)
             tmpPos = CaravanWalk.CurrentObstacle.transform.position + new Vector3(.4f, 0, 0);
@@ -107,8 +101,8 @@ public class HumanBehavior : MonoBehaviour {
         for (int i = 0; i < currentTeam.Count; i++) {
             var dude = currentTeam[i];
 
-            if (Vector3.Distance(dude.transform.position, tmpPos + new Vector3(0, 0, (-(menAmount / 2) + i) * .1f)) > .01f) {
-                dude.transform.position = Vector3.MoveTowards(dude.transform.position, tmpPos + new Vector3(0, 0, (-(menAmount / 2) + i) * .1f), walkspeed * 4 * Time.deltaTime);
+            if (Vector3.Distance(dude.transform.position, tmpPos + new Vector3(0, 0, (-(currentTeam.Count / 2) + i) * .1f)) > .01f) {
+                dude.transform.position = Vector3.MoveTowards(dude.transform.position, tmpPos + new Vector3(0, 0, (-(currentTeam.Count / 2) + i) * .1f), walkspeed * 4 * Time.deltaTime);
                 dude.GetComponent<Animator>().SetBool("Wobbling", true);
             }
             else

@@ -14,6 +14,7 @@ public class MapBehaviorManager : MonoBehaviour {
     [SerializeField] private Transform beginning;
     [SerializeField] private Transform end;
     [SerializeField] private MapUnrollSequence mapUnrollSequence;
+    [SerializeField] private HumanBehavior humanBehavior;
 
     public GameObject CurrentObstacle { get; private set; }
     public float CurrentSpeed { get; private set; }
@@ -74,7 +75,6 @@ public class MapBehaviorManager : MonoBehaviour {
 
             if (item.transform.position == new Vector3(end.transform.position.x, item.transform.position.y, item.transform.position.z)) {
                 surroundings.RemoveAt(i);
-
                 Destroy(item);
             }
         }
@@ -83,8 +83,7 @@ public class MapBehaviorManager : MonoBehaviour {
             return;
 
         if (surroundings.Count < currentArea.maxObstacleAmount && Timer(ref currentTimer) <= 0) {
-            var tmpRandom = Random.Range(0, 2);
-            if (tmpRandom == 1)
+            if (Random.Range(0, 2) == 1)
                 SpawnSurroundings(backgroundPrefabs[Random.Range(0, backgroundPrefabs.Count)], Random.Range(-.42f, -.3f));
             else
                 SpawnSurroundings(foregroundPrefabs[Random.Range(0, foregroundPrefabs.Count)], Random.Range(.3f, .42f));
@@ -108,7 +107,7 @@ public class MapBehaviorManager : MonoBehaviour {
             currentHorse.position = Vector3.MoveTowards(currentHorse.position, currentPos.position, CurrentSpeed / 100 * Time.deltaTime);
             Vector3 newPos = new(currentCaravan.position.x, currentCaravan.position.y, currentHorse.position.z);
 
-            currentCaravan.LookAt(new Vector3(currentHorse.position.x, transform.position.y + .03f, currentHorse.position.z));
+            currentCaravan.LookAt(new Vector3(currentHorse.position.x, end.position.y + .03f, currentHorse.position.z));
             currentCaravan.position = Vector3.MoveTowards(currentCaravan.position, newPos, CurrentSpeed / 500 * Time.deltaTime);
             currentCaravan.position = new Vector3(currentHorse.position.x + .4f, currentCaravan.position.y, currentCaravan.position.z);
         }
@@ -117,7 +116,7 @@ public class MapBehaviorManager : MonoBehaviour {
     private void SpawnSurroundings(GameObject model, float offset) {
         GameObject item = Instantiate(model, objectParent);
 
-        item.transform.position = new Vector3(beginning.transform.position.x, transform.position.y + 2, beginning.transform.position.z + offset);
+        item.transform.position = new Vector3(beginning.position.x, beginning.position.y + 2, beginning.position.z + offset);
         item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
 
         StartCoroutine(MoveSurrounding(item.transform, beginning.position.y, false, false));
@@ -133,22 +132,21 @@ public class MapBehaviorManager : MonoBehaviour {
         float dis = totalWidth / (caravanPositions.Count + 1);
 
         GameObject tmpHorse = Instantiate(horse.prefab);
-        tmpHorse.transform.position = new Vector3(transform.position.x + 2.5f, transform.position.y + .16f, transform.position.z);
+        tmpHorse.transform.position = new Vector3(end.position.x, end.position.y + .16f, end.position.z);
         horses.Add(tmpHorse);
 
         GameObject tmpCaravan = Instantiate(caravan.prefab);
-        tmpCaravan.transform.position = new Vector3(transform.position.x + 3f, transform.position.y + .03f, transform.position.z);
+        tmpCaravan.transform.position = new Vector3(end.position.x, end.position.y + .03f, end.position.z);
         caravans.Add(tmpCaravan);
 
         for (int i = 0; i < caravanPositions.Count; i++)
-            caravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
+            caravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, end.position.y + .16f, transform.position.z);
     }
 
     private void RemoveCaravan() {
         GameObject go = caravanPositions[^1];
 
         caravanPositions.Remove(go);
-
         Destroy(go);
 
         GameObject Horse = horses[^1];
@@ -164,18 +162,7 @@ public class MapBehaviorManager : MonoBehaviour {
         float dis = totalWidth / (caravanPositions.Count + 1);
 
         for (int i = 0; i < caravanPositions.Count; i++)
-            caravanPositions[i].transform.position = new Vector3(transform.position.x + dis * (i + 1) - totalWidth / 2, transform.position.y + .16f, transform.position.z);
-    }
-
-    private void SpawnObstacle(GameObject obstacle) {
-        GameObject item = Instantiate(obstacle, objectParent);
-
-        item.transform.position = new Vector3(beginning.transform.position.x, transform.position.y + 2, beginning.transform.position.z);
-
-        StartCoroutine(MoveSurrounding(item.transform, transform.position.y, false, true));
-
-        CurrentObstacle = item;
-        surroundings.Add(item);
+            caravanPositions[i].transform.position = new Vector3(end.position.x + dis * (i + 1) - totalWidth / 2, end.position.y + .16f, end.position.z);
     }
 
     private void StartEncounter(EncounterSO encounter) {
@@ -187,6 +174,16 @@ public class MapBehaviorManager : MonoBehaviour {
         StartCoroutine(CallEvent(encounter));
     }
 
+    private void SpawnObstacle(GameObject obstacle) {
+        GameObject item = Instantiate(obstacle, objectParent);
+        item.transform.position = new Vector3(beginning.transform.position.x, end.position.y + 2, beginning.transform.position.z);
+
+        StartCoroutine(MoveSurrounding(item.transform, end.position.y, false, true));
+
+        CurrentObstacle = item;
+        surroundings.Add(item);
+    }
+
     private void Restart() {
         surroundings.Remove(CurrentObstacle);
 
@@ -196,7 +193,6 @@ public class MapBehaviorManager : MonoBehaviour {
         StartCoroutine(MoveSurrounding(CurrentObstacle.transform, 3, true, false));
 
         encounterActive = false;
-        mapActive = false;
     }
 
     private float Timer(ref float timer) {
@@ -208,11 +204,18 @@ public class MapBehaviorManager : MonoBehaviour {
 
         yield return new WaitForSeconds(2f);
 
-        for (int i = 0; i < InventoryManager.Instance.RunInventory.HorseDatas.Count; i++) {
-            HorseData item = InventoryManager.Instance.RunInventory.HorseDatas[i];
-            CaravanData caravan = InventoryManager.Instance.RunInventory.CaravanDatas[i];
+        InventoryData inventory = InventoryManager.Instance.RunInventory;
+
+        for (int i = 0; i < inventory.HorseDatas.Count; i++) {
+            HorseData item = inventory.HorseDatas[i];
+            CaravanData caravan = inventory.CaravanDatas[i];
 
             SpawnCaravan(item, caravan);
+        }
+
+        for (int i = 0; i < inventory.ManDatas.Count; i++) {
+            ManData man = inventory.ManDatas[i];
+            humanBehavior.AddMan(man.prefab);
         }
 
         CurrentSpeed = currentArea.movementSpeed;

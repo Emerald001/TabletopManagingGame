@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : Singleton<InventoryManager>
-{
+public class InventoryManager : Singleton<InventoryManager> {
     public InventoryData RunInventory { get; private set; } = new();
 
     private void Awake() {
@@ -22,36 +21,31 @@ public class InventoryData {
     public List<CaravanData> CaravanDatas = new();
 }
 
-public class HorseData {
-    public GameObject prefab;
-
+[SerializeField]
+[CreateAssetMenu(menuName = "Inventory/HorseData")]
+public class HorseData : BaseData {
     public float speed;
-    public float size;
-
-    public string name;
-    public string description;
 }
 
-public class ManData {
-    public GameObject prefab;
-
+[SerializeField]
+[CreateAssetMenu(menuName = "Inventory/ManData")]
+public class ManData : BaseData {
     public float speed;
-    public float size;
-
-    public string name;
-    public string description;
 }
 
-public class CaravanData {
-    public GameObject prefab;
-
-    public float speed;
-    public float size;
-
-    public string name;
-    public string description;
+[SerializeField]
+[CreateAssetMenu(menuName = "Inventory/CaravanData")]
+public class CaravanData : BaseData {
+    public int teamSpace;
 }
 
 public class PlayerData {
 
+}
+
+public abstract class BaseData : ScriptableObject {
+    public GameObject prefab;
+
+    public new string name;
+    public string description;
 }
