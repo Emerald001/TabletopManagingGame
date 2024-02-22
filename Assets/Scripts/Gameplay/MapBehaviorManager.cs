@@ -204,7 +204,7 @@ public class MapBehaviorManager : MonoBehaviour {
 
         yield return new WaitForSeconds(2f);
 
-        InventoryData inventory = InventoryManager.Instance.RunInventory;
+        InventoryData inventory = InventoryManager.Instance.GetCurrentlySelectedInventory();
 
         for (int i = 0; i < inventory.HorseDatas.Count; i++) {
             HorseData item = inventory.HorseDatas[i];

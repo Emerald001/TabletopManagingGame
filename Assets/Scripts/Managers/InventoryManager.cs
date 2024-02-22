@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryManager : Singleton<InventoryManager> {
+    [SerializeField] private InventoryData debugData;
+
     public InventoryData RunInventory { get; private set; } = new();
 
     private void Awake() {
@@ -10,7 +12,7 @@ public class InventoryManager : Singleton<InventoryManager> {
     }
 
     public InventoryData GetCurrentlySelectedInventory() {
-        return new InventoryData();
+        return debugData;
     }
 }
 
