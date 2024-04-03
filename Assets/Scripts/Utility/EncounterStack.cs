@@ -152,7 +152,7 @@ public class EncounterStack : MonoBehaviour {
         actionQueue.Enqueue(new WaitAction(.3f));
         actionQueue.Enqueue(new DoMethodAction(() => GameManager.Instance.AudioManager.PlayAudio("CardSlam")));
         actionQueue.Enqueue(new MoveObjectAction(CurrentCard.gameObject, 10, EndCardPos));
-        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .3f)));
+        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .3f)));
         actionQueue.Enqueue(new DoMethodAction(SetNextCardActive));
     }
 
@@ -176,7 +176,7 @@ public class EncounterStack : MonoBehaviour {
             tmpTf.transform.eulerAngles = transform.eulerAngles + new Vector3(0, Random.Range(-5, 5), 0);
 
             actionQueue.Enqueue(new MoveObjectAction(card, 20f, tmpTf));
-            actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .08f)));
+            actionQueue.Enqueue(new DoMethodAction(() => EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .08f)));
 
             nextEncounters.Add(card);
             nextEncountersTransforms.Add(tmpTf);

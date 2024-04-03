@@ -8,12 +8,14 @@ public class GameManager : Singleton<GameManager> {
     [SerializeField] private AudioManager Amanager;
     [SerializeField] private QuestManager Qmanager;
     [SerializeField] private DisplayEncounter EncounterDisplay;
+    [SerializeField] private CameraManager Cmanager;
 
     public ResourceManager ResourceManager => Rmanager;
     public MapBehaviorManager MapManager => Mmanager;
     public AudioManager AudioManager => Amanager;
     public QuestManager QuestManager => Qmanager;
     public DisplayEncounter DisplayEncounter => EncounterDisplay;
+    public CameraManager CameraManager => Cmanager;
 
     private EncounterSO currentEncounter;
 

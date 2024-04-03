@@ -1413,6 +1413,7 @@ MonoBehaviour:
   Amanager: {fileID: 161689664}
   Qmanager: {fileID: 1113113147}
   EncounterDisplay: {fileID: 1434890888}
+  Cmanager: {fileID: 1846309613}
 --- !u!114 &161689664
 MonoBehaviour:
   m_ObjectHideFlags: 0

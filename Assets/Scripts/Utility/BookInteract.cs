@@ -82,7 +82,7 @@ public class BookInteract : MonoBehaviour {
     }
 
     private IEnumerator ActivateBook(RectTransform targetPos, Vector3 bookTarget) {
-        EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .05f);
+        EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .05f);
 
         while (book.position != targetPos.position) {
             book.position = Vector2.MoveTowards(book.position, targetPos.position, 5000 * Time.deltaTime);

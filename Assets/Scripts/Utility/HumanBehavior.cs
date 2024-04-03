@@ -60,7 +60,8 @@ public class HumanBehavior : MonoBehaviour {
 
     public void AddMan(GameObject manPrefab) {
         var tmp = Instantiate(manPrefab);
-        tmp.transform.position = new Vector3(0, 1.65f, -.35f);
+        tmp.transform.position = new Vector3(Random.Range(0, -1.3f), 1.65f, Random.Range(-.25f, -.75f));
+        tmp.transform.eulerAngles = new Vector3(0, Random.Range(0, 180f));
 
         currentTeam.Add(tmp);
     }

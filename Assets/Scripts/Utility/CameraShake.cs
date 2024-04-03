@@ -11,10 +11,10 @@ public class CameraShake : MonoBehaviour {
     private float shakeTimer;
 
     private void OnEnable() {
-        EventManager<CaravanEventType, float>.Subscribe(CaravanEventType.DO_SCREENSHAKE, ShakeCamera);
+        EventManager<CameraEventType, float>.Subscribe(CameraEventType.DO_SCREENSHAKE, ShakeCamera);
     }
     private void OnDisable() {
-        EventManager<CaravanEventType, float>.Unsubscribe(CaravanEventType.DO_SCREENSHAKE, ShakeCamera);
+        EventManager<CameraEventType, float>.Unsubscribe(CameraEventType.DO_SCREENSHAKE, ShakeCamera);
     }
 
     private void Update() {

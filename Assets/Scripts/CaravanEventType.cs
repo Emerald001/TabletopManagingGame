@@ -1,5 +1,4 @@
 ﻿public enum CaravanEventType {
-    EMPTY,
     ON_GAME_STARTED,
     ON_GAME_PAUSED,
     ON_GAME_UNPAUSED,
@@ -7,7 +6,6 @@
     ON_ENCOUNTER_STARTED,
     ON_CARAVAN_STOPPED,
     ON_ENCOUNTER_ENDED,
-    DO_SCREENSHAKE,
     ADD_CARAVAN,
     ADD_HUMAN,
     DESTROY_CARAVAN,
@@ -16,4 +14,9 @@
     DO_GAME_OVER,
     SET_AREA,
     SET_QUEST
+}
+
+public enum CameraEventType {
+    DO_SCREENSHAKE,
+    SET_INTERACTABLE,
 }

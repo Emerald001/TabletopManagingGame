@@ -60,11 +60,11 @@ public class DisplayEncounter : MonoBehaviour {
         actionQueue.Enqueue(new DoMethodAction<Color>(SetColor, encounter.lightColor));
         actionQueue.Enqueue(new DoMethodAction(() => GameManager.Instance.AudioManager.PlayAudio("BackgroundHit")));
         actionQueue.Enqueue(new MoveObjectAction(currentBackground, 50, backgroundStandardTransform.position));
-        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .4f)));
+        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .4f)));
         actionQueue.Enqueue(new WaitAction(.2f));
         actionQueue.Enqueue(new DoMethodAction(() => GameManager.Instance.AudioManager.PlayAudio("ForegroundHit")));
         actionQueue.Enqueue(new MoveObjectAction(currentSurrouning, 25, foregroundStandardTransform.position));
-        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .2f)));
+        actionQueue.Enqueue(new DoMethodAction(() => EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .2f)));
         actionQueue.Enqueue(new WaitAction(.2f));
 
         if (encounter.options.Count > 0) {

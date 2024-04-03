@@ -7,6 +7,12 @@ public class LiquidStack : MonoBehaviour {
     [SerializeField] private float size = 0.01f;
     [SerializeField] private float targetHeight;
 
+    private void Start() {
+        Resource.transform.localPosition = new Vector3(0, size, 0);
+        Resource.transform.localScale = new Vector3(.7f, size, .7f);
+        targetHeight = size;
+    }
+
     private void Update() {
         targetHeight = Mathf.Lerp(targetHeight, size, .5f * Time.deltaTime);
 

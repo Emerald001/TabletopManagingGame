@@ -22,7 +22,7 @@ public class MapUnrollSequence : MonoBehaviour {
         ActionQueue.Enqueue(new ActionStack(
             new MoveObjectAction(roll, 5, rollEndPoint),
             new ResizeAction(roll.transform, 1, new Vector3(.2f, .2f, 1)),
-            new MoveObjectAction(mask, 5, maskEndPoint.position)));
+            new MoveObjectAction(mask, 4.9f, maskEndPoint.position)));
         ActionQueue.Enqueue(new DestoyObjectAction(roll));
     }
 

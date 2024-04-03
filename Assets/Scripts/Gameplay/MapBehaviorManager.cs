@@ -28,6 +28,7 @@ public class MapBehaviorManager : MonoBehaviour {
     private List<GameObject> foregroundPrefabs = new();
 
     private AreaSO currentArea;
+    private ActionQueue spawnQueue = new();
 
     private float timer;
     private float currentTimer;
@@ -57,6 +58,8 @@ public class MapBehaviorManager : MonoBehaviour {
 
         UpdateSurroundingsPositions();
         UpdateCaravanPositions();
+
+        spawnQueue.OnUpdate();
     }
 
     private void SetArea(AreaSO area) {
@@ -71,9 +74,9 @@ public class MapBehaviorManager : MonoBehaviour {
     private void UpdateSurroundingsPositions() {
         for (int i = surroundings.Count - 1; i >= 0; i--) {
             GameObject item = surroundings[i];
-            item.transform.position = Vector3.MoveTowards(item.transform.position, new Vector3(end.transform.position.x, item.transform.position.y, item.transform.position.z), CurrentSpeed / 300 * Time.deltaTime);
+            item.transform.position = Vector3.MoveTowards(item.transform.position, new Vector3(end.position.x, item.transform.position.y, item.transform.position.z), CurrentSpeed / 300 * Time.deltaTime);
 
-            if (item.transform.position == new Vector3(end.transform.position.x, item.transform.position.y, item.transform.position.z)) {
+            if (item.transform.position == new Vector3(end.position.x, item.transform.position.y, item.transform.position.z)) {
                 surroundings.RemoveAt(i);
                 Destroy(item);
             }
@@ -117,6 +120,17 @@ public class MapBehaviorManager : MonoBehaviour {
         GameObject item = Instantiate(model, objectParent);
 
         item.transform.position = new Vector3(beginning.position.x, beginning.position.y + 2, beginning.position.z + offset);
+        item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
+
+        StartCoroutine(MoveSurrounding(item.transform, beginning.position.y, false, false));
+
+        surroundings.Add(item);
+    }
+
+    private void SpawnSurroundings(GameObject model, Vector3 offset) {
+        GameObject item = Instantiate(model, objectParent);
+
+        item.transform.position = offset;
         item.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
 
         StartCoroutine(MoveSurrounding(item.transform, beginning.position.y, false, false));
@@ -200,17 +214,29 @@ public class MapBehaviorManager : MonoBehaviour {
     }
 
     private IEnumerator SetupMap() {
+        GameManager.Instance.CameraManager.SetCameraGoal(CameraPositions.caravanPos);
         mapUnrollSequence.DoUnrollRoll(currentArea.MapRollPrefab);
 
         yield return new WaitForSeconds(2f);
 
-        InventoryData inventory = InventoryManager.Instance.GetCurrentlySelectedInventory();
+        for (int i = 0; i < 30; i++) {
+            if (Random.Range(0, 2) == 1) {
+                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2, beginning.position.z + Random.Range(-.42f, -.3f));
+                SpawnSurroundings(backgroundPrefabs[Random.Range(0, backgroundPrefabs.Count)], offset);
+            }
+            else {
+                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2, beginning.position.z + Random.Range(.3f, .42f));
+                SpawnSurroundings(foregroundPrefabs[Random.Range(0, foregroundPrefabs.Count)], offset);
+            }
+        }
 
+        InventoryData inventory = InventoryManager.Instance.GetCurrentlySelectedInventory();
         for (int i = 0; i < inventory.HorseDatas.Count; i++) {
             HorseData item = inventory.HorseDatas[i];
             CaravanData caravan = inventory.CaravanDatas[i];
 
-            SpawnCaravan(item, caravan);
+            spawnQueue.Enqueue(new DoMethodAction(() => SpawnCaravan(item, caravan)));
+            spawnQueue.Enqueue(new WaitAction(3f));
         }
 
         for (int i = 0; i < inventory.ManDatas.Count; i++) {
@@ -233,7 +259,7 @@ public class MapBehaviorManager : MonoBehaviour {
         }
 
         if (shakeScreen)
-            EventManager<CaravanEventType, float>.Invoke(CaravanEventType.DO_SCREENSHAKE, .07f);
+            EventManager<CameraEventType, float>.Invoke(CameraEventType.DO_SCREENSHAKE, .07f);
 
         if (destroy)
             Destroy(model.gameObject);
