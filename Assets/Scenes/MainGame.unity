@@ -3851,7 +3851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &526931546
 Transform:
   m_ObjectHideFlags: 0
@@ -11850,7 +11850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1622569817
 Transform:
   m_ObjectHideFlags: 0
@@ -12455,7 +12455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Village: {fileID: 0}
-  CardPrefab: {fileID: 3944678185705048115, guid: 12e888fe41681804da9b98b7815cb941, type: 3}
+  CardPrefab: {fileID: 8633689004430520472, guid: 12e888fe41681804da9b98b7815cb941, type: 3}
   DisplayPos: {fileID: 13311597}
   SlamDownPos: {fileID: 794339876}
   EndCardPos: {fileID: 1112366680}
