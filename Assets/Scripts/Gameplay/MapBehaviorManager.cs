@@ -221,11 +221,11 @@ public class MapBehaviorManager : MonoBehaviour {
 
         for (int i = 0; i < 30; i++) {
             if (Random.Range(0, 2) == 1) {
-                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2, beginning.position.z + Random.Range(-.42f, -.3f));
+                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2 + Random.Range(0, 2f), beginning.position.z + Random.Range(-.42f, -.3f));
                 SpawnSurroundings(backgroundPrefabs[Random.Range(0, backgroundPrefabs.Count)], offset);
             }
             else {
-                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2, beginning.position.z + Random.Range(.3f, .42f));
+                var offset = new Vector3(Random.Range(beginning.position.x, end.position.x), beginning.position.y + 2 + Random.Range(0, 2f), beginning.position.z + Random.Range(.3f, .42f));
                 SpawnSurroundings(foregroundPrefabs[Random.Range(0, foregroundPrefabs.Count)], offset);
             }
         }

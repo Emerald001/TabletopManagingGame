@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Do action queue instead of all this stuff
+
 public class BookInteract : MonoBehaviour {
     [SerializeField] private RectTransform book;
     [SerializeField] private RectTransform InfoHolder;
