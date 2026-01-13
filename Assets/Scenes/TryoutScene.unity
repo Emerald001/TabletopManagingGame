@@ -934,7 +934,7 @@ GameObject:
   - component: {fileID: 1483181824}
   - component: {fileID: 1483181825}
   m_Layer: 0
-  m_Name: HandHoverPositions
+  m_Name: Blackjack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -978,7 +978,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 553511504}
+  - {fileID: 623051812}
   - {fileID: 229651548}
   - {fileID: 441881080}
   - {fileID: 1483181824}
-  - {fileID: 623051812}

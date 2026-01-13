@@ -53,9 +53,9 @@ public class BlackjackManager : MonoBehaviour {
                 Switch();
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
+            Debug.Log("AAAA");
             if (hitHover.IsHovering) {
                 currentStack.Hit(deck.PickCard());
-                print("AAAA");
             }
             else if (standHover.IsHovering) {
                 Stand();
@@ -72,24 +72,7 @@ public class BlackjackManager : MonoBehaviour {
     private void Stand() {
         currentStack.Stand();
 
-        if (secondStack.isActive) {
-            CheckForBust();
-            return;
-        }
-
-        int playerScore = firstStack.CalculateScore();
-        int dealerScore = dealerStack.CalculateScore();
-
-        dealerStack.ReplaceCard(0, deck.PickCard());
-        DealerSequence(playerScore);
-
-        Debug.Log($" Dealer scored: {dealerScore}");
-        Debug.Log($" Your score: {playerScore}\n");
-
-        if (dealerScore >= playerScore && dealerScore < 22)
-            Debug.Log("  YOU LOST");
-        else
-            Debug.Log($"  YOU WIN!");
+        CheckForBust();
     }
 
     private void Split() {
@@ -113,10 +96,7 @@ public class BlackjackManager : MonoBehaviour {
         if (!hasSplit)
             return;
 
-        if (currentStack == firstStack)
-            currentStack = secondStack;
-        else
-            currentStack = firstStack;
+        currentStack = currentStack == firstStack ? secondStack : firstStack;
     }
 
     // Dealer drawing cards and trying to win!
@@ -140,8 +120,27 @@ public class BlackjackManager : MonoBehaviour {
                 secondStack.hasStood = true;
         }
 
+        if (!hasSplit) {
+            dealerStack.ReplaceCard(0, deck.PickCard());
+            int playerScore = firstStack.CalculateScore();
+            DealerSequence(playerScore);
+
+            int dealerScore = dealerStack.CalculateScore();
+
+            Debug.Log($" Dealer scored: {dealerScore}");
+            Debug.Log($" Your score: {playerScore}\n");
+
+            if (dealerScore >= playerScore && dealerScore < 22)
+                Debug.Log("  YOU LOST");
+            else
+                Debug.Log($"  YOU WIN!");
+
+            return;
+        }
+
         if ((firstStack.hasStood || firstStack.hasBust) &&
             (secondStack.hasStood || secondStack.hasBust)) {
+
             int highestScore = firstStack.CalculateScore() > secondStack.CalculateScore() ? firstStack.CalculateScore() : secondStack.CalculateScore();
             dealerStack.ReplaceCard(0, deck.PickCard());
             DealerSequence(highestScore);
@@ -165,14 +164,21 @@ public class BlackjackManager : MonoBehaviour {
 
                 if (dealerScore >= playerScore && dealerScore < 22)
                     Debug.Log("  YOU LOST on Stack two");
-                else {
+                else
                     Debug.Log($"  YOU WIN! On Stack two");
-                }
             }
             else
                 Debug.Log("   BUST: YOU LOSE on Stack two!");
         }
         else
             Switch();
+    }
+
+    private void RunLoseSequence() {
+
+    }
+
+    private void RunWinSequence() {
+
     }
 }

@@ -41,6 +41,18 @@ public class BlackJackStack {
         return (false, new Card(CardValues.FaceDown, CardSuit.FaceDown));
     }
 
+    public bool HasWon(int scoreCompare) {
+        int ownScore = CalculateScore();
+
+        if (hasBust || !isActive)
+            return false;
+
+        if (scoreCompare < ownScore && ownScore < 22)
+            return true;
+
+        return false;
+    }
+
     public int CalculateScore() {
         int score = 0;
         int aceAmount = 0;
